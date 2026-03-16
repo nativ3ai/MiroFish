@@ -36,6 +36,14 @@
     </div>
 
     <div class="main-content-area">
+      <ButterflyEffectOverlay
+        v-if="simulationConfig?.counterfactual"
+        :simulation-id="simulationId"
+        :simulation-config="simulationConfig"
+        :branch-actions="allActions"
+        :run-status="runStatus"
+      />
+
       <div class="intel-layout">
         <section class="timeline-shell full">
           <div class="timeline-header" v-if="allActions.length > 0">
@@ -116,6 +124,7 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import ButterflyEffectOverlay from './ButterflyEffectOverlay.vue'
 import { generateReport } from '../api/report'
 import { getRunStatus, getRunStatusDetail, startSimulation, stopSimulation } from '../api/simulation'
 
@@ -126,6 +135,7 @@ const props = defineProps({
     type: Number,
     default: 30
   },
+  simulationConfig: Object,
   projectData: Object,
   graphData: Object,
   systemLogs: Array
