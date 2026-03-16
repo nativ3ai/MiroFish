@@ -2,19 +2,19 @@
   <div class="main-view">
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">MIROFISH</div>
+        <div class="brand" @click="router.push('/')">MIROFISH // COUNTERFACTUAL</div>
       </div>
 
       <div class="header-center">
         <div class="view-switcher">
           <button
-            v-for="mode in ['archive', 'split', 'lab']"
+            v-for="mode in ['dashboard', 'split', 'lab']"
             :key="mode"
             class="switch-btn"
             :class="{ active: viewMode === mode }"
             @click="viewMode = mode"
           >
-            {{ { archive: '档案', split: '双栏', lab: '实验室' }[mode] }}
+            {{ { dashboard: '分支态', split: '差分', lab: '实验室' }[mode] }}
           </button>
         </div>
       </div>
@@ -34,21 +34,41 @@
 
     <main class="content-area">
       <div class="panel-wrapper left" :style="leftPanelStyle">
-        <CounterfactualArchivePanel
+        <Step3Simulation
           :simulation-id="currentSimulationId"
-          :simulation-data="simulationData"
+          :read-only="true"
+          :focus-round="selectedRound"
           :simulation-config="simulationConfig"
-          :timeline="timeline"
-          :agent-stats="agentStats"
-          :round-actions="roundActions"
-          :selected-round="selectedRound"
-          :loading-actions="loadingActions"
-          @update:selectedRound="selectedRound = $event"
+          :max-rounds="maxRound"
+          :minutes-per-round="minutesPerRound"
+          :project-data="simulationData"
+          :graph-data="null"
+          :system-logs="systemLogs"
+          @add-log="addLog"
+          @update-status="updateStatus"
         />
       </div>
 
       <div class="panel-wrapper right" :style="rightPanelStyle">
+        <CounterfactualArchivePanel
+          v-if="viewMode !== 'lab'"
+          :simulation-id="currentSimulationId"
+          :base-simulation-id="baseSimulationId"
+          :simulation-data="simulationData"
+          :simulation-config="simulationConfig"
+          :timeline="timeline"
+          :base-timeline="baseTimeline"
+          :agent-stats="agentStats"
+          :branch-round-actions="branchRoundActions"
+          :base-round-actions="baseRoundActions"
+          :selected-round="selectedRound"
+          :loading-actions="loadingActions"
+          @update:selected-round="selectedRound = $event"
+          @open-lab="viewMode = 'lab'"
+        />
+
         <CounterfactualLabPanel
+          v-else
           :simulation-id="currentSimulationId"
           :profiles="profiles"
           :selected-round="selectedRound"
@@ -65,12 +85,13 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import CounterfactualArchivePanel from '../components/CounterfactualArchivePanel.vue'
 import CounterfactualLabPanel from '../components/CounterfactualLabPanel.vue'
+import Step3Simulation from '../components/Step3Simulation.vue'
 import {
   getSimulation,
+  getSimulationActions,
   getSimulationConfig,
   getSimulationTimeline,
   getAgentStats,
-  getSimulationActions,
   getSimulationProfiles
 } from '../api/simulation'
 
@@ -82,25 +103,30 @@ const currentSimulationId = ref(route.params.simulationId)
 const simulationData = ref(null)
 const simulationConfig = ref(null)
 const timeline = ref([])
+const baseTimeline = ref([])
 const agentStats = ref([])
-const roundActions = ref([])
 const profiles = ref([])
+const branchRoundActions = ref([])
+const baseRoundActions = ref([])
 const selectedRound = ref(0)
-const loadingActions = ref(false)
 const currentStatus = ref('processing')
+const systemLogs = ref([])
+const minutesPerRound = ref(60)
+const loadingActions = ref(false)
 
+const baseSimulationId = computed(() => simulationConfig.value?.counterfactual?.base_simulation_id || '')
 const maxRound = computed(() => timeline.value.length ? Math.max(...timeline.value.map(item => item.round_num || 0)) : 0)
 
 const leftPanelStyle = computed(() => {
-  if (viewMode.value === 'archive') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
+  if (viewMode.value === 'dashboard') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
   if (viewMode.value === 'lab') return { width: '0%', opacity: 0, transform: 'translateX(-20px)' }
-  return { width: '54%', opacity: 1, transform: 'translateX(0)' }
+  return { width: '58%', opacity: 1, transform: 'translateX(0)' }
 })
 
 const rightPanelStyle = computed(() => {
   if (viewMode.value === 'lab') return { width: '100%', opacity: 1, transform: 'translateX(0)' }
-  if (viewMode.value === 'archive') return { width: '0%', opacity: 0, transform: 'translateX(20px)' }
-  return { width: '46%', opacity: 1, transform: 'translateX(0)' }
+  if (viewMode.value === 'dashboard') return { width: '0%', opacity: 0, transform: 'translateX(20px)' }
+  return { width: '42%', opacity: 1, transform: 'translateX(0)' }
 })
 
 const statusClass = computed(() => currentStatus.value)
@@ -109,6 +135,57 @@ const statusText = computed(() => {
   if (currentStatus.value === 'completed') return 'Ready'
   return 'Loading'
 })
+
+function addLog(message) {
+  const time = new Date().toLocaleTimeString('en-US', {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
+  systemLogs.value.push({ time, msg: message })
+  if (systemLogs.value.length > 200) {
+    systemLogs.value.shift()
+  }
+}
+
+function updateStatus(status) {
+  currentStatus.value = status
+}
+
+function normalizeActions(actions) {
+  return [...(actions || [])].sort((left, right) => {
+    const leftTime = new Date(left.timestamp || 0).getTime()
+    const rightTime = new Date(right.timestamp || 0).getTime()
+    return leftTime - rightTime
+  })
+}
+
+async function loadRoundActions() {
+  if (!currentSimulationId.value || selectedRound.value === null || selectedRound.value === undefined) return
+
+  loadingActions.value = true
+  try {
+    const requests = [
+      getSimulationActions(currentSimulationId.value, { round_num: selectedRound.value, limit: 200 })
+    ]
+
+    if (baseSimulationId.value) {
+      requests.push(getSimulationActions(baseSimulationId.value, { round_num: selectedRound.value, limit: 200 }))
+    }
+
+    const [branchRes, baseRes] = await Promise.all(requests)
+    branchRoundActions.value = normalizeActions(branchRes.data || [])
+    baseRoundActions.value = normalizeActions(baseRes?.data || [])
+    addLog(`Round ${selectedRound.value} forensics synced`) 
+  } catch (error) {
+    console.error('加载轮次动作失败:', error)
+    branchRoundActions.value = []
+    baseRoundActions.value = []
+  } finally {
+    loadingActions.value = false
+  }
+}
 
 async function loadBaseData() {
   currentStatus.value = 'processing'
@@ -124,36 +201,38 @@ async function loadBaseData() {
 
     simulationData.value = simulationRes.data || null
     simulationConfig.value = configRes.data || null
-    timeline.value = timelineRes.data || []
+    timeline.value = timelineRes.data?.timeline || []
     agentStats.value = agentStatsRes.data || []
     profiles.value = profilesRes.data?.profiles || []
+    minutesPerRound.value = configRes.data?.time_config?.minutes_per_round || minutesPerRound.value
+
+    if (baseSimulationId.value) {
+      try {
+        const baseTimelineRes = await getSimulationTimeline(baseSimulationId.value, 0)
+        baseTimeline.value = baseTimelineRes.data?.timeline || []
+      } catch (error) {
+        console.warn('加载基线时间线失败:', error)
+        baseTimeline.value = []
+      }
+    }
 
     if (timeline.value.length > 0) {
       const hottestRound = [...timeline.value].sort((a, b) => (b.total_actions || 0) - (a.total_actions || 0))[0]
-      selectedRound.value = hottestRound?.round_num || timeline.value[0].round_num
+      const nextRound = hottestRound?.round_num ?? timeline.value[0].round_num ?? 0
+      const shouldForceInitialLoad = nextRound === selectedRound.value
+      selectedRound.value = nextRound
+      if (shouldForceInitialLoad) {
+        await loadRoundActions()
+      }
+    } else {
+      selectedRound.value = 0
+      await loadRoundActions()
     }
 
     currentStatus.value = 'completed'
   } catch (error) {
     console.error('加载反事实工作台失败:', error)
     currentStatus.value = 'error'
-  }
-}
-
-async function loadRoundActions(roundNum) {
-  if (roundNum === null || roundNum === undefined) return
-  loadingActions.value = true
-  try {
-    const response = await getSimulationActions(currentSimulationId.value, {
-      round_num: roundNum,
-      limit: 300
-    })
-    roundActions.value = response.data?.actions || []
-  } catch (error) {
-    console.error('加载轮次动作失败:', error)
-    roundActions.value = []
-  } finally {
-    loadingActions.value = false
   }
 }
 
@@ -166,11 +245,25 @@ function handleLaunched(payload) {
   })
 }
 
-watch(selectedRound, (round) => {
-  loadRoundActions(round)
+watch(selectedRound, async (round, previousRound) => {
+  if (round === null || round === undefined) return
+  if (round === previousRound && branchRoundActions.value.length > 0) return
+  await loadRoundActions()
+})
+
+watch(baseSimulationId, async (nextId, previousId) => {
+  if (!nextId || nextId === previousId) return
+  try {
+    const response = await getSimulationTimeline(nextId, 0)
+    baseTimeline.value = response.data?.timeline || []
+  } catch (error) {
+    console.warn('刷新基线时间线失败:', error)
+    baseTimeline.value = []
+  }
 })
 
 onMounted(async () => {
+  addLog('Counterfactual branch workbench armed')
   await loadBaseData()
 })
 </script>
@@ -180,19 +273,22 @@ onMounted(async () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background:
+    radial-gradient(circle at top, rgba(22, 48, 38, 0.96), rgba(5, 10, 8, 0.98) 44%),
+    #050908;
   overflow: hidden;
   font-family: 'Space Grotesk', 'Noto Sans SC', system-ui, sans-serif;
 }
 
 .app-header {
   height: 60px;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid rgba(122, 240, 181, 0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  background: #fff;
+  background: rgba(5, 9, 8, 0.88);
+  backdrop-filter: blur(18px);
   z-index: 100;
   position: relative;
 }
@@ -206,17 +302,19 @@ onMounted(async () => {
 .brand {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 1px;
+  font-size: 16px;
+  letter-spacing: 0.14em;
   cursor: pointer;
+  color: #dffeed;
 }
 
 .view-switcher {
   display: flex;
-  background: #f5f5f5;
+  background: rgba(255, 255, 255, 0.04);
   padding: 4px;
   border-radius: 6px;
   gap: 4px;
+  border: 1px solid rgba(122, 240, 181, 0.1);
 }
 
 .switch-btn {
@@ -225,22 +323,23 @@ onMounted(async () => {
   padding: 6px 16px;
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: rgba(219, 255, 237, 0.58);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .switch-btn.active {
-  background: #fff;
-  color: #000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: rgba(122, 240, 181, 0.12);
+  color: #f0fff7;
+  box-shadow: inset 0 0 0 1px rgba(122, 240, 181, 0.08);
 }
 
 .header-right {
   display: flex;
   align-items: center;
   gap: 16px;
+  color: rgba(219, 255, 237, 0.72);
 }
 
 .workflow-step {
@@ -253,18 +352,18 @@ onMounted(async () => {
 .step-num {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
-  color: #999;
+  color: rgba(219, 255, 237, 0.52);
 }
 
 .step-name {
   font-weight: 700;
-  color: #000;
+  color: #eafef4;
 }
 
 .step-divider {
   width: 1px;
   height: 14px;
-  background-color: #e0e0e0;
+  background-color: rgba(122, 240, 181, 0.12);
 }
 
 .status-indicator {
@@ -272,7 +371,7 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #666;
+  color: rgba(219, 255, 237, 0.58);
   font-weight: 500;
 }
 
@@ -284,16 +383,16 @@ onMounted(async () => {
 }
 
 .status-indicator.processing .dot {
-  background: #ff5722;
+  background: #ffbf67;
   animation: pulse 1s infinite;
 }
 
 .status-indicator.completed .dot {
-  background: #4caf50;
+  background: #4de2a5;
 }
 
 .status-indicator.error .dot {
-  background: #f44336;
+  background: #ff6767;
 }
 
 @keyframes pulse {
@@ -314,6 +413,10 @@ onMounted(async () => {
 }
 
 .panel-wrapper.left {
-  border-right: 1px solid #eaeaea;
+  border-right: 1px solid rgba(122, 240, 181, 0.12);
+}
+
+.panel-wrapper.right {
+  background: rgba(5, 9, 8, 0.86);
 }
 </style>

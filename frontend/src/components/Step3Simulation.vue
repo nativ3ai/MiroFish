@@ -52,17 +52,25 @@
               <span>[ TW {{ twitterActionsCount }} ]</span>
               <span>[ RD {{ redditActionsCount }} ]</span>
               <span>[ STATUS {{ runStatus.runner_status || 'running' }} ]</span>
+              <span v-if="focusRound !== null && focusRound !== undefined">[ ROUND FOCUS {{ focusRound }} ]</span>
             </div>
           </div>
 
-          <div class="timeline-feed">
+          <div ref="timelineFeed" class="timeline-feed">
             <div class="timeline-axis"></div>
             <TransitionGroup name="timeline-item">
               <article
                 v-for="action in chronologicalActions"
                 :key="action._uniqueId || action.id || `${action.timestamp}-${action.agent_id}`"
                 class="timeline-item"
-                :class="action.platform"
+                :class="[
+                  action.platform,
+                  {
+                    focused: isFocusedRound(action),
+                    muted: focusRound !== null && focusRound !== undefined && !isFocusedRound(action)
+                  }
+                ]"
+                :data-round="getActionRound(action)"
               >
                 <div class="timeline-marker">
                   <div class="marker-core"></div>
@@ -135,6 +143,14 @@ const props = defineProps({
     type: Number,
     default: 30
   },
+  readOnly: {
+    type: Boolean,
+    default: false
+  },
+  focusRound: {
+    type: Number,
+    default: null
+  },
   simulationConfig: Object,
   projectData: Object,
   graphData: Object,
@@ -153,6 +169,7 @@ const actionIds = ref(new Set())
 const prevTwitterRound = ref(0)
 const prevRedditRound = ref(0)
 const logContent = ref(null)
+const timelineFeed = ref(null)
 let statusTimer = null
 let detailTimer = null
 
@@ -232,6 +249,66 @@ async function doStartSimulation() {
     emit('update-status', 'error')
   } finally {
     isStarting.value = false
+  }
+}
+
+async function loadArchivedSimulation() {
+  if (!props.simulationId) {
+    addLog('错误：缺少 simulationId')
+    emit('update-status', 'error')
+    return
+  }
+
+  resetAllState()
+  addLog('Loading archived simulation workbench...')
+  emit('update-status', 'processing')
+
+  try {
+    const [statusResponse, detailResponse] = await Promise.all([
+      getRunStatus(props.simulationId),
+      getRunStatusDetail(props.simulationId)
+    ])
+
+    if (statusResponse.success && statusResponse.data) {
+      runStatus.value = statusResponse.data
+      prevTwitterRound.value = statusResponse.data.twitter_current_round || 0
+      prevRedditRound.value = statusResponse.data.reddit_current_round || 0
+
+      const completed = statusResponse.data.runner_status === 'completed' ||
+        statusResponse.data.runner_status === 'stopped' ||
+        checkPlatformsCompleted(statusResponse.data)
+
+      phase.value = completed ? 2 : 1
+      emit('update-status', completed ? 'completed' : 'processing')
+    }
+
+    if (detailResponse.success && detailResponse.data) {
+      const serverActions = detailResponse.data.all_actions || []
+      const nextActions = []
+      const nextActionIds = new Set()
+
+      serverActions.forEach(action => {
+        const actionId = action.id || `${action.timestamp}-${action.platform}-${action.agent_id}-${action.action_type}`
+        if (nextActionIds.has(actionId)) return
+        nextActionIds.add(actionId)
+        nextActions.push({ ...action, _uniqueId: actionId })
+      })
+
+      allActions.value = nextActions
+      actionIds.value = nextActionIds
+      addLog(`Loaded ${nextActions.length} archived actions`)
+    }
+
+    if (runStatus.value.runner_status === 'running' || runStatus.value.runner_status === 'starting') {
+      startStatusPolling()
+      startDetailPolling()
+      addLog('Archived view attached to live branch state')
+    } else {
+      addLog('Archived branch ready')
+    }
+  } catch (error) {
+    addLog(`归档加载异常: ${error.message}`)
+    emit('update-status', 'error')
   }
 }
 
@@ -376,6 +453,27 @@ function getPlatformLabel(platform) {
   return (platform || 'STREAM').toUpperCase()
 }
 
+function getActionRound(action) {
+  return Number(action.round_num ?? action.round ?? 0)
+}
+
+function isFocusedRound(action) {
+  return props.focusRound === null || props.focusRound === undefined || getActionRound(action) === props.focusRound
+}
+
+function scrollToFocusedRound() {
+  if (props.focusRound === null || props.focusRound === undefined) return
+  nextTick(() => {
+    const target = timelineFeed.value?.querySelector(`[data-round="${props.focusRound}"]`)
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    }
+  })
+}
+
 function formatActionTime(timestamp) {
   if (!timestamp) return ''
   try {
@@ -423,9 +521,23 @@ watch(() => props.systemLogs?.length, () => {
   })
 })
 
+watch(() => props.focusRound, () => {
+  scrollToFocusedRound()
+})
+
+watch(() => allActions.value.length, () => {
+  if (props.focusRound === null || props.focusRound === undefined) return
+  scrollToFocusedRound()
+})
+
 onMounted(() => {
-  addLog('Simulation workbench armed')
-  if (props.simulationId) doStartSimulation()
+  addLog(props.readOnly ? 'Archived simulation workbench armed' : 'Simulation workbench armed')
+  if (!props.simulationId) return
+  if (props.readOnly) {
+    loadArchivedSimulation()
+    return
+  }
+  doStartSimulation()
 })
 
 onUnmounted(() => {
@@ -608,6 +720,7 @@ onUnmounted(() => {
   width: 100%;
   display: flex;
   margin-bottom: 24px;
+  transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 .timeline-item.twitter {
@@ -618,6 +731,17 @@ onUnmounted(() => {
 .timeline-item.reddit {
   justify-content: flex-end;
   padding-left: 50%;
+}
+
+.timeline-item.focused .timeline-card,
+.timeline-item.focused .timeline-marker {
+  border-color: rgba(255, 211, 106, 0.32);
+  box-shadow: 0 0 0 1px rgba(255, 211, 106, 0.12), 0 18px 36px rgba(0, 0, 0, 0.22);
+}
+
+.timeline-item.muted {
+  opacity: 0.34;
+  filter: saturate(0.7);
 }
 
 .timeline-marker {

@@ -91,6 +91,14 @@ Click the image to watch MiroFish's deep prediction of the lost ending based on 
 4. **Report Generation**: ReportAgent with rich toolset for deep interaction with post-simulation environment
 5. **Deep Interaction**: Chat with any agent in the simulated world & Interact with ReportAgent
 
+## Counterfactual Branch Workbench
+
+The fork used by PrediHermes includes a dedicated counterfactual branch workbench for historical branch inspection.
+
+- Use `/simulation/<simulation_id>/counterfactual` for the read-only branch dashboard
+- Use `/simulation/<simulation_id>/start` only for live execution or restarting a branch
+- The workbench combines the archived Step 3 timeline, per-round scrubbing, branch/base event diffs, and a relationship timeline for injected-actor impact
+
 ## 🚀 Quick Start
 
 ### Option 1: Source Code Deployment (Recommended)
