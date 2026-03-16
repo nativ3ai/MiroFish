@@ -171,11 +171,35 @@ class SimulationParameters:
     # 生成元数据
     generated_at: str = field(default_factory=lambda: datetime.now().isoformat())
     generation_reasoning: str = ""  # LLM的推理说明
+
+    @staticmethod
+    def add_legacy_aliases(payload: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        为外部兼容性保留旧字段名。
+
+        内部实现统一使用 *_config 命名，但很多外部脚本仍然读取：
+        - agents
+        - events
+        - time.total_hours
+
+        这里同步输出别名，避免破坏既有集成。
+        """
+        time_config = dict(payload.get("time_config") or {})
+        event_config = dict(payload.get("event_config") or {})
+        agent_configs = list(payload.get("agent_configs") or [])
+
+        payload["time"] = {
+            **time_config,
+            "total_hours": time_config.get("total_simulation_hours")
+        }
+        payload["events"] = event_config
+        payload["agents"] = agent_configs
+        return payload
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典"""
         time_dict = asdict(self.time_config)
-        return {
+        payload = {
             "simulation_id": self.simulation_id,
             "project_id": self.project_id,
             "graph_id": self.graph_id,
@@ -190,6 +214,7 @@ class SimulationParameters:
             "generated_at": self.generated_at,
             "generation_reasoning": self.generation_reasoning,
         }
+        return self.add_legacy_aliases(payload)
     
     def to_json(self, indent: int = 2) -> str:
         """转换为JSON字符串"""
@@ -984,4 +1009,3 @@ class SimulationConfigGenerator:
                 "influence_weight": 1.0
             }
     
-

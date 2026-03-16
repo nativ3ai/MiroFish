@@ -503,7 +503,8 @@ class SimulationManager:
             return None
         
         with open(config_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            config = json.load(f)
+        return SimulationParameters.add_legacy_aliases(config)
 
     @staticmethod
     def _slugify_username(name: str, fallback: str) -> str:
@@ -673,7 +674,7 @@ class SimulationManager:
         }
 
         with open(config_path, 'w', encoding='utf-8') as f:
-            json.dump(config, f, ensure_ascii=False, indent=2)
+            json.dump(SimulationParameters.add_legacy_aliases(config), f, ensure_ascii=False, indent=2)
 
         new_state.status = SimulationStatus.READY
         new_state.entities_count = max(base_state.entities_count, len(agent_configs))
