@@ -282,10 +282,7 @@ def build_graph():
     try:
         logger.info("=== 开始构建图谱 ===")
         
-        # 检查配置
-        errors = []
-        if not Config.ZEP_API_KEY:
-            errors.append("ZEP_API_KEY未配置")
+        errors = Config.validate()
         if errors:
             logger.error(f"配置错误: {errors}")
             return jsonify({
@@ -400,7 +397,7 @@ def build_graph():
                 # 创建图谱
                 task_manager.update_task(
                     task_id,
-                    message="创建Zep图谱...",
+                    message=f"创建{builder.backend_name}图谱...",
                     progress=10
                 )
                 graph_id = builder.create_graph(name=graph_name)
@@ -442,7 +439,7 @@ def build_graph():
                 # 等待Zep处理完成（查询每个episode的processed状态）
                 task_manager.update_task(
                     task_id,
-                    message="等待Zep处理数据...",
+                    message=f"等待{builder.backend_name}图谱处理数据...",
                     progress=55
                 )
                 
@@ -454,7 +451,7 @@ def build_graph():
                         progress=progress
                     )
                 
-                builder._wait_for_episodes(episode_uuids, wait_progress_callback)
+                builder._wait_for_episodes(episode_uuids, wait_progress_callback, graph_id=graph_id)
                 
                 # 获取图谱数据
                 task_manager.update_task(
@@ -567,12 +564,6 @@ def get_graph_data(graph_id: str):
     获取图谱数据（节点和边）
     """
     try:
-        if not Config.ZEP_API_KEY:
-            return jsonify({
-                "success": False,
-                "error": "ZEP_API_KEY未配置"
-            }), 500
-        
         builder = GraphBuilderService(api_key=Config.ZEP_API_KEY)
         graph_data = builder.get_graph_data(graph_id)
         
@@ -595,12 +586,6 @@ def delete_graph(graph_id: str):
     删除Zep图谱
     """
     try:
-        if not Config.ZEP_API_KEY:
-            return jsonify({
-                "success": False,
-                "error": "ZEP_API_KEY未配置"
-            }), 500
-        
         builder = GraphBuilderService(api_key=Config.ZEP_API_KEY)
         builder.delete_graph(graph_id)
         

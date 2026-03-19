@@ -3,19 +3,15 @@ Zep图谱记忆更新服务
 将模拟中的Agent活动动态更新到Zep图谱中
 """
 
-import os
 import time
 import threading
-import json
 from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass
 from datetime import datetime
 from queue import Queue, Empty
 
-from zep_cloud.client import Zep
-
-from ..config import Config
 from ..utils.logger import get_logger
+from .graph_backend import get_graph_backend
 
 logger = get_logger('mirofish.zep_graph_memory_updater')
 
@@ -200,7 +196,7 @@ class AgentActivity:
 
 class ZepGraphMemoryUpdater:
     """
-    Zep图谱记忆更新器
+    图谱记忆更新器
     
     监控模拟的actions日志文件，将新的agent活动实时更新到Zep图谱中。
     按平台分组，每累积BATCH_SIZE条活动后批量发送到Zep。
@@ -233,16 +229,12 @@ class ZepGraphMemoryUpdater:
         初始化更新器
         
         Args:
-            graph_id: Zep图谱ID
-            api_key: Zep API Key（可选，默认从配置读取）
+            graph_id: 图谱ID
+            api_key: 兼容旧签名，已忽略
         """
         self.graph_id = graph_id
-        self.api_key = api_key or Config.ZEP_API_KEY
-        
-        if not self.api_key:
-            raise ValueError("ZEP_API_KEY未配置")
-        
-        self.client = Zep(api_key=self.api_key)
+        self.api_key = api_key
+        self.backend = get_graph_backend(graph_id=graph_id)
         
         # 活动队列
         self._activity_queue: Queue = Queue()
@@ -265,7 +257,9 @@ class ZepGraphMemoryUpdater:
         self._failed_count = 0      # 发送失败的批次数
         self._skipped_count = 0     # 被过滤跳过的活动数（DO_NOTHING）
         
-        logger.info(f"ZepGraphMemoryUpdater 初始化完成: graph_id={graph_id}, batch_size={self.BATCH_SIZE}")
+        logger.info(
+            f"ZepGraphMemoryUpdater 初始化完成: graph_id={graph_id}, batch_size={self.BATCH_SIZE}, backend={self.backend.backend_name}"
+        )
     
     def _get_platform_display_name(self, platform: str) -> str:
         """获取平台的显示名称"""
@@ -330,7 +324,7 @@ class ZepGraphMemoryUpdater:
         
         self._activity_queue.put(activity)
         self._total_activities += 1
-        logger.debug(f"添加活动到Zep队列: {activity.agent_name} - {activity.action_type}")
+        logger.debug(f"添加活动到图谱队列: {activity.agent_name} - {activity.action_type}")
     
     def add_activity_from_dict(self, data: Dict[str, Any], platform: str):
         """
@@ -357,7 +351,7 @@ class ZepGraphMemoryUpdater:
         self.add_activity(activity)
     
     def _worker_loop(self):
-        """后台工作循环 - 按平台批量发送活动到Zep"""
+        """后台工作循环 - 按平台批量发送活动到图谱 backend"""
         while self._running or not self._activity_queue.empty():
             try:
                 # 尝试从队列获取活动（超时1秒）
@@ -389,7 +383,7 @@ class ZepGraphMemoryUpdater:
     
     def _send_batch_activities(self, activities: List[AgentActivity], platform: str):
         """
-        批量发送活动到Zep图谱（合并为一条文本）
+        批量发送活动到图谱（合并为一条文本）
         
         Args:
             activities: Agent活动列表
@@ -405,11 +399,7 @@ class ZepGraphMemoryUpdater:
         # 带重试的发送
         for attempt in range(self.MAX_RETRIES):
             try:
-                self.client.graph.add(
-                    graph_id=self.graph_id,
-                    type="text",
-                    data=combined_text
-                )
+                self.backend.append_text(self.graph_id, combined_text, episode_type="text")
                 
                 self._total_sent += 1
                 self._total_items_sent += len(activities)
@@ -420,10 +410,10 @@ class ZepGraphMemoryUpdater:
                 
             except Exception as e:
                 if attempt < self.MAX_RETRIES - 1:
-                    logger.warning(f"批量发送到Zep失败 (尝试 {attempt + 1}/{self.MAX_RETRIES}): {e}")
+                    logger.warning(f"批量发送到图谱失败 (尝试 {attempt + 1}/{self.MAX_RETRIES}): {e}")
                     time.sleep(self.RETRY_DELAY * (attempt + 1))
                 else:
-                    logger.error(f"批量发送到Zep失败，已重试{self.MAX_RETRIES}次: {e}")
+                    logger.error(f"批量发送到图谱失败，已重试{self.MAX_RETRIES}次: {e}")
                     self._failed_count += 1
     
     def _flush_remaining(self):
