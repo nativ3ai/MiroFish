@@ -130,10 +130,20 @@ LLM_API_KEY=your_api_key
 LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 LLM_MODEL_NAME=qwen-plus
 
-# Zep Cloud Configuration
+# Graph backend selection (start with local unless you need Zep)
+# Valid values: auto | local | zep
+GRAPH_BACKEND=local
+
+# Zep Cloud Configuration (required only when GRAPH_BACKEND=zep)
 # Free monthly quota is sufficient for simple usage: https://app.getzep.com/
 ZEP_API_KEY=your_zep_api_key
 ```
+
+Notes:
+
+- `GRAPH_BACKEND=local` stores graphs in `backend/uploads/graphs/*.sqlite3` and removes the Zep dependency.
+- `GRAPH_BACKEND=auto` uses Zep only when `ZEP_API_KEY` is present, otherwise it falls back to local SQLite.
+- `GRAPH_BACKEND=zep` forces the Zep backend and therefore requires `ZEP_API_KEY`.
 
 #### 2. Install Dependencies
 

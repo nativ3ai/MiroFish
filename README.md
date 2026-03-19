@@ -130,10 +130,20 @@ LLM_API_KEY=your_api_key
 LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 LLM_MODEL_NAME=qwen-plus
 
-# Zep Cloud 配置
+# 图谱后端配置（推荐先用 local）
+# 可选值: auto | local | zep
+GRAPH_BACKEND=local
+
+# Zep Cloud 配置（仅在 GRAPH_BACKEND=zep 时必需）
 # 每月免费额度即可支撑简单使用：https://app.getzep.com/
 ZEP_API_KEY=your_zep_api_key
 ```
+
+说明：
+
+- `GRAPH_BACKEND=local` 会将图谱存储在 `backend/uploads/graphs/*.sqlite3`，不依赖 Zep。
+- `GRAPH_BACKEND=auto` 会在存在 `ZEP_API_KEY` 时使用 Zep，否则自动回退到本地 SQLite。
+- `GRAPH_BACKEND=zep` 会强制要求 `ZEP_API_KEY`。
 
 #### 2. 安装依赖
 
