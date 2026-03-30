@@ -12,6 +12,7 @@
 
 import json
 import math
+import re
 from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
@@ -21,8 +22,24 @@ from openai import OpenAI
 from ..config import Config
 from ..utils.logger import get_logger
 from .zep_entity_reader import EntityNode, ZepEntityReader
+from .entity_quality import (
+    assess_entity_candidate,
+    infer_entity_role,
+    normalize_entity_key,
+    selection_entity_key,
+    selection_preference_score,
+    weighted_entity_admission,
+)
 
 logger = get_logger('mirofish.simulation_config')
+
+LOCAL_ENTITY_STOPWORDS = {
+    "additional", "analysis", "api", "back", "base", "end", "evidence", "generated",
+    "general", "how", "ignore", "keyword", "liquidity", "market", "news", "plan",
+    "primary", "questions", "recent", "reference", "region", "relevant", "resolution",
+    "risk", "situation", "source", "suggested", "the", "this", "top", "trend", "url",
+    "use", "utc", "what", "which", "yes",
+}
 
 # 中国作息时间配置（北京时间）
 CHINA_TIMEZONE_CONFIG = {
@@ -167,6 +184,7 @@ class SimulationParameters:
     # LLM配置
     llm_model: str = ""
     llm_base_url: str = ""
+    entity_selection: List[Dict[str, Any]] = field(default_factory=list)
     
     # 生成元数据
     generated_at: str = field(default_factory=lambda: datetime.now().isoformat())
@@ -211,6 +229,7 @@ class SimulationParameters:
             "reddit_config": asdict(self.reddit_config) if self.reddit_config else None,
             "llm_model": self.llm_model,
             "llm_base_url": self.llm_base_url,
+            "entity_selection": self.entity_selection,
             "generated_at": self.generated_at,
             "generation_reasoning": self.generation_reasoning,
         }
@@ -255,14 +274,23 @@ class SimulationConfigGenerator:
         self.api_key = api_key or Config.LLM_API_KEY
         self.base_url = base_url or Config.LLM_BASE_URL
         self.model_name = model_name or Config.LLM_MODEL_NAME
-        
-        if not self.api_key:
+        self._last_entity_selection: List[Dict[str, Any]] = []
+        self.client: Optional[OpenAI] = None
+
+        if self.api_key:
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url=self.base_url,
+                timeout=Config.LOCAL_LLM_REQUEST_TIMEOUT_SECONDS if Config.is_local_llm() else None,
+            )
+
+    def _require_client(self) -> OpenAI:
+        if self.client is None:
             raise ValueError("LLM_API_KEY 未配置")
-        
-        self.client = OpenAI(
-            api_key=self.api_key,
-            base_url=self.base_url
-        )
+        return self.client
+
+    def _resolved_entity_type(self, entity: EntityNode) -> str:
+        return infer_entity_role(entity.name, entity.get_entity_type() or "Unknown")
     
     def generate_config(
         self,
@@ -294,6 +322,16 @@ class SimulationConfigGenerator:
             SimulationParameters: 完整的模拟参数
         """
         logger.info(f"开始智能生成模拟配置: simulation_id={simulation_id}, 实体数={len(entities)}")
+
+        if Config.is_local_llm() and Config.LOCAL_SIMULATION_PROFILE == "lean":
+            target_entities = max(Config.LOCAL_SIM_MAX_AGENTS, 8)
+            entities = self._select_local_entities(
+                entities,
+                simulation_requirement=simulation_requirement,
+                document_text=document_text,
+                max_entities=target_entities,
+            )
+            logger.info(f"本地精简模式启用: 实体数压缩到 {len(entities)}")
         
         # 计算总步骤数
         num_batches = math.ceil(len(entities) / self.AGENTS_PER_BATCH)
@@ -395,12 +433,145 @@ class SimulationConfigGenerator:
             reddit_config=reddit_config,
             llm_model=self.model_name,
             llm_base_url=self.base_url,
+            entity_selection=list(self._last_entity_selection),
             generation_reasoning=" | ".join(reasoning_parts)
         )
+
+        if Config.is_local_llm() and Config.LOCAL_SIMULATION_PROFILE == "lean":
+            params = self._apply_local_runtime_profile(params)
+            reasoning_parts.append(
+                "本地运行优化: 精简Agent规模和小时活跃度，以适配本地Ollama/Qwen推理吞吐。"
+            )
+            params.generation_reasoning = " | ".join(reasoning_parts)
         
         logger.info(f"模拟配置生成完成: {len(params.agent_configs)} 个Agent配置")
         
         return params
+
+    def _apply_local_runtime_profile(self, params: SimulationParameters) -> SimulationParameters:
+        max_agents = max(Config.LOCAL_SIM_MAX_AGENTS, 8)
+        if len(params.agent_configs) > max_agents:
+            selected_agents = self._select_local_agents(params.agent_configs, max_agents)
+            params.agent_configs = selected_agents
+            params.event_config = self._assign_initial_post_agents(params.event_config, selected_agents)
+
+        params.event_config.initial_posts = list(params.event_config.initial_posts[: max(Config.LOCAL_SIM_INITIAL_POST_LIMIT, 1)])
+        params.time_config.agents_per_hour_min = min(
+            params.time_config.agents_per_hour_min,
+            Config.LOCAL_SIM_AGENTS_PER_HOUR_MIN,
+        )
+        params.time_config.agents_per_hour_max = min(
+            params.time_config.agents_per_hour_max,
+            Config.LOCAL_SIM_AGENTS_PER_HOUR_MAX,
+        )
+        if params.time_config.agents_per_hour_max < params.time_config.agents_per_hour_min:
+            params.time_config.agents_per_hour_max = params.time_config.agents_per_hour_min
+        return params
+
+    def _select_local_agents(
+        self,
+        agent_configs: List[AgentActivityConfig],
+        max_agents: int,
+    ) -> List[AgentActivityConfig]:
+        if len(agent_configs) <= max_agents:
+            return list(agent_configs)
+
+        def score(agent: AgentActivityConfig) -> float:
+            return (
+                float(agent.influence_weight or 0)
+                + float(agent.activity_level or 0)
+                + float(agent.posts_per_hour or 0) * 0.5
+                + float(agent.comments_per_hour or 0) * 0.25
+            )
+
+        prioritized = sorted(agent_configs, key=score, reverse=True)
+        return prioritized[:max_agents]
+
+    def _select_local_entities(
+        self,
+        entities: List[EntityNode],
+        *,
+        simulation_requirement: str,
+        document_text: str,
+        max_entities: int,
+    ) -> List[EntityNode]:
+        requirement_terms = {
+            token
+            for token in re.findall(r"[a-z0-9][a-z0-9_-]{2,}", simulation_requirement.lower())
+            if token not in LOCAL_ENTITY_STOPWORDS
+        }
+        corpus = f"{simulation_requirement}\n{document_text}".lower()
+        ranked_entities: List[tuple[EntityNode, Any]] = []
+        for entity in entities:
+            related_names = [
+                str(node.get("name") or "")
+                for node in (entity.related_nodes or [])
+                if isinstance(node, dict)
+            ]
+            graph_degree = len(entity.related_edges or []) + len(entity.related_nodes or [])
+            decision = weighted_entity_admission(
+                entity.name,
+                summary=entity.summary,
+                labels=entity.labels,
+                anchor_terms=sorted(requirement_terms),
+                anchor_text=simulation_requirement,
+                corpus_text=corpus,
+                graph_degree=graph_degree,
+                related_names=related_names,
+            )
+            ranked_entities.append((entity, decision))
+
+        deduped: Dict[str, tuple[EntityNode, Any, float]] = {}
+        for entity, decision in ranked_entities:
+            graph_degree = len(entity.related_edges or []) + len(entity.related_nodes or [])
+            key = selection_entity_key(entity.name)
+            preference = selection_preference_score(
+                entity.name,
+                decision.role,
+                decision.score,
+                graph_degree=graph_degree,
+            )
+            existing = deduped.get(key)
+            if not existing or preference > existing[2]:
+                deduped[key] = (entity, decision, preference)
+
+        ranked = sorted(
+            deduped.values(),
+            key=lambda row: (row[1].keep, row[2], row[1].score, row[0].name.lower()),
+            reverse=True,
+        )
+        selected = [row for row in ranked if row[1].keep][:max_entities]
+        if not selected:
+            selected = ranked[:max_entities]
+
+        self._last_entity_selection = []
+        for entity, decision, preference in ranked[: max(max_entities * 2, 20)]:
+            graph_degree = len(entity.related_edges or []) + len(entity.related_nodes or [])
+            anchor_overlap = int(decision.breakdown.get("exact_anchor", 0.0) > 0) + int(
+                round(decision.breakdown.get("token_overlap", 0.0) / 2.3)
+            )
+            summary_overlap = int(round(decision.breakdown.get("summary_overlap", 0.0) / 1.1))
+            self._last_entity_selection.append(
+                {
+                    "uuid": entity.uuid,
+                    "name": entity.name,
+                    "role": decision.role,
+                    "kept": any(entity.uuid == keep_entity.uuid for keep_entity, _, _ in selected),
+                    "score": decision.score,
+                    "threshold": decision.threshold,
+                    "reason": decision.reason,
+                    "rationale": decision.rationale,
+                    "selection_preference": preference,
+                    "labels": list(entity.labels or []),
+                    "graph_degree": graph_degree,
+                    "anchor_overlap": anchor_overlap,
+                    "summary_overlap": summary_overlap,
+                    "breakdown": dict(decision.breakdown),
+                    "summary_preview": (entity.summary or "")[:180],
+                }
+            )
+
+        return [entity for entity, _, _ in selected]
     
     def _build_context(
         self,
@@ -437,7 +608,7 @@ class SimulationConfigGenerator:
         # 按类型分组
         by_type: Dict[str, List[EntityNode]] = {}
         for e in entities:
-            t = e.get_entity_type() or "Unknown"
+            t = self._resolved_entity_type(e)
             if t not in by_type:
                 by_type[t] = []
             by_type[t].append(e)
@@ -464,7 +635,7 @@ class SimulationConfigGenerator:
         
         for attempt in range(max_attempts):
             try:
-                response = self.client.chat.completions.create(
+                response = self._require_client().chat.completions.create(
                     model=self.model_name,
                     messages=[
                         {"role": "system", "content": system_prompt},
@@ -676,13 +847,13 @@ class SimulationConfigGenerator:
         
         # 获取可用的实体类型列表，供 LLM 参考
         entity_types_available = list(set(
-            e.get_entity_type() or "Unknown" for e in entities
+            self._resolved_entity_type(e) for e in entities
         ))
         
         # 为每种类型列出代表性实体名称
         type_examples = {}
         for e in entities:
-            etype = e.get_entity_type() or "Unknown"
+            etype = self._resolved_entity_type(e)
             if etype not in type_examples:
                 type_examples[etype] = []
             if len(type_examples[etype]) < 3:
@@ -762,11 +933,15 @@ class SimulationConfigGenerator:
         
         # 按实体类型建立 agent 索引
         agents_by_type: Dict[str, List[AgentActivityConfig]] = {}
+        agents_by_name: Dict[str, List[AgentActivityConfig]] = {}
         for agent in agent_configs:
             etype = agent.entity_type.lower()
             if etype not in agents_by_type:
                 agents_by_type[etype] = []
             agents_by_type[etype].append(agent)
+            normalized_name = normalize_entity_key(agent.entity_name)
+            if normalized_name:
+                agents_by_name.setdefault(normalized_name, []).append(agent)
         
         # 类型映射表（处理 LLM 可能输出的不同格式）
         type_aliases = {
@@ -792,7 +967,12 @@ class SimulationConfigGenerator:
             matched_agent_id = None
             
             # 1. 直接匹配
-            if poster_type in agents_by_type:
+            if poster_type in agents_by_name:
+                agents = agents_by_name[poster_type]
+                idx = used_indices.get(f"name:{poster_type}", 0) % len(agents)
+                matched_agent_id = agents[idx].agent_id
+                used_indices[f"name:{poster_type}"] = idx + 1
+            elif poster_type in agents_by_type:
                 agents = agents_by_type[poster_type]
                 idx = used_indices.get(poster_type, 0) % len(agents)
                 matched_agent_id = agents[idx].agent_id
@@ -848,7 +1028,7 @@ class SimulationConfigGenerator:
             entity_list.append({
                 "agent_id": start_idx + i,
                 "entity_name": e.name,
-                "entity_type": e.get_entity_type() or "Unknown",
+                "entity_type": self._resolved_entity_type(e),
                 "summary": e.summary[:summary_len] if e.summary else ""
             })
         
@@ -889,13 +1069,16 @@ class SimulationConfigGenerator:
 }}"""
 
         system_prompt = "你是社交媒体行为分析专家。返回纯JSON，配置需符合中国人作息习惯。"
-        
-        try:
-            result = self._call_llm_with_retry(prompt, system_prompt)
-            llm_configs = {cfg["agent_id"]: cfg for cfg in result.get("agent_configs", [])}
-        except Exception as e:
-            logger.warning(f"Agent配置批次LLM生成失败: {e}, 使用规则生成")
+
+        if Config.is_local_llm() and Config.LOCAL_SIMULATION_PROFILE == "lean":
             llm_configs = {}
+        else:
+            try:
+                result = self._call_llm_with_retry(prompt, system_prompt)
+                llm_configs = {cfg["agent_id"]: cfg for cfg in result.get("agent_configs", [])}
+            except Exception as e:
+                logger.warning(f"Agent配置批次LLM生成失败: {e}, 使用规则生成")
+                llm_configs = {}
         
         # 构建AgentActivityConfig对象
         configs = []
@@ -911,7 +1094,7 @@ class SimulationConfigGenerator:
                 agent_id=agent_id,
                 entity_uuid=entity.uuid,
                 entity_name=entity.name,
-                entity_type=entity.get_entity_type() or "Unknown",
+                entity_type=self._resolved_entity_type(entity),
                 activity_level=cfg.get("activity_level", 0.5),
                 posts_per_hour=cfg.get("posts_per_hour", 0.5),
                 comments_per_hour=cfg.get("comments_per_hour", 1.0),
@@ -928,7 +1111,7 @@ class SimulationConfigGenerator:
     
     def _generate_agent_config_by_rule(self, entity: EntityNode) -> Dict[str, Any]:
         """基于规则生成单个Agent配置（中国人作息）"""
-        entity_type = (entity.get_entity_type() or "Unknown").lower()
+        entity_type = self._resolved_entity_type(entity).lower()
         
         if entity_type in ["university", "governmentagency", "ngo"]:
             # 官方机构：工作时间活动，低频率，高影响力

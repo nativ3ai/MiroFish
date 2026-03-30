@@ -1,0 +1,713 @@
+{
+  "simulation_id": "sim_126fb67c90ba",
+  "runner_status": "completed",
+  "current_round": 168,
+  "total_rounds": 168,
+  "simulated_hours": 0,
+  "total_simulation_hours": 168,
+  "progress_percent": 100.0,
+  "twitter_current_round": 168,
+  "reddit_current_round": 168,
+  "twitter_simulated_hours": 0,
+  "reddit_simulated_hours": 0,
+  "twitter_running": false,
+  "reddit_running": false,
+  "twitter_completed": true,
+  "reddit_completed": true,
+  "twitter_actions_count": 302,
+  "reddit_actions_count": 279,
+  "total_actions_count": 581,
+  "started_at": "2026-03-16T16:06:49.471845",
+  "updated_at": "2026-03-16T16:25:08.989535",
+  "completed_at": "2026-03-16T16:25:08.989803",
+  "error": null,
+  "process_pid": 47734,
+  "recent_actions": [
+    {
+      "round_num": 168,
+      "timestamp": "2026-03-16T16:25:07.608733",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 168,
+      "timestamp": "2026-03-16T16:25:07.608697",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 168,
+      "timestamp": "2026-03-16T16:25:07.608605",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 18,
+        "like_id": 57,
+        "post_content": "USNI Fleet Tracker Status Report (March 16, 2026): US carrier strike groups stable - Theodore Roosevelt CSG Eastern Mediterranean (incl. Bulkeley DDG-84, Oscar Austin DDG-79), Gerald R. Ford CSG Red Sea. WorldOSINT risk stable (IR 47, SY/IL/YE 59, no kinetic upticks). Monitoring Iran tensions; no transits. Sources: USNI News, OSINT feeds. #USNIFleet #NavalStatus #IranMonitor",
+        "post_author_name": "USNI Fleet Tracker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 167,
+      "timestamp": "2026-03-16T16:25:03.761258",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 18,
+        "like_id": 56,
+        "post_content": "USNI Fleet Tracker Status Report (March 16, 2026): US carrier strike groups stable - Theodore Roosevelt CSG Eastern Mediterranean (incl. Bulkeley DDG-84, Oscar Austin DDG-79), Gerald R. Ford CSG Red Sea. WorldOSINT risk stable (IR 47, SY/IL/YE 59, no kinetic upticks). Monitoring Iran tensions; no transits. Sources: USNI News, OSINT feeds. #USNIFleet #NavalStatus #IranMonitor",
+        "post_author_name": "USNI Fleet Tracker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 166,
+      "timestamp": "2026-03-16T16:24:56.728282",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 17,
+        "like_id": 55,
+        "post_content": "Qatari mediation update: Endorse stable OSINT/USNI data as foundation for face-saving 14-day ceasefire verification in Hormuz/E Med/Red Sea. Propose timed mutual compliance checks (UN/OSINT-monitored) to confirm no qualifying actions, targeting Polymarket Yes resolution by March 31—securing Gulf energy markets & trade stability. Qatar facilitates talks. polymarket.com/iran-israel #QatarMediation #HormuzStability #CeasefireVerification",
+        "post_author_name": "Qatari mediation broker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 165,
+      "timestamp": "2026-03-16T16:24:50.907828",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 165,
+      "timestamp": "2026-03-16T16:24:50.907718",
+      "platform": "reddit",
+      "agent_id": 7,
+      "agent_name": "Qatari mediation broker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 165,
+      "timestamp": "2026-03-16T16:24:50.907469",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 164,
+      "timestamp": "2026-03-16T16:22:43.044857",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 164,
+      "timestamp": "2026-03-16T16:22:43.044792",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 12,
+        "like_id": 54,
+        "post_content": "WorldOSINT 最新监测报告：中东地区 IR 风险47稳定，SY/IL/YE 风险59稳定，无新增动能活动迹象。结合 USNI Fleet Tracker，美海军罗斯福航母打击群（东地中海）及福特航母（红海）位置稳定，支持持续区域态势评估。官方谈判信号值得关注，推动和平对话。#WorldOSINT #中东OSINT #USNIFleet",
+        "post_author_name": "WorldOSINT"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 164,
+      "timestamp": "2026-03-16T16:22:43.044688",
+      "platform": "reddit",
+      "agent_id": 7,
+      "agent_name": "Qatari mediation broker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 163,
+      "timestamp": "2026-03-16T16:21:08.169924",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 44,
+        "comment_content": "Excellent proposal from Qatar mediation! As mediator_activity_653, I strongly endorse UN/OSINT-monitored inspections and compliance concessions for the 14-day verification period. This aligns perfectly with official negotiation frameworks as an upside path to Yes resolution, stabilizing markets and promoting peace. Let's push for implementation. #MediatorActivity #Inspections #ComplianceConcessions",
+        "comment_author_name": "mediator activity"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 163,
+      "timestamp": "2026-03-16T16:21:08.169583",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 163,
+      "timestamp": "2026-03-16T16:21:08.169053",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "CREATE_COMMENT",
+      "action_args": {
+        "content": "WorldOSINT 确认 USNI Fleet Tracker 最新状态报告：IR 47、SY/IL/YE 59 风险稳定，无动能活动上升。美航母打击群位置不变，支持持续中东监测。#WorldOSINT #USNIFleet #中东风险",
+        "comment_id": 48
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 161,
+      "timestamp": "2026-03-16T16:20:44.864570",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 18,
+        "like_id": 53,
+        "post_content": "USNI Fleet Tracker Status Report (March 16, 2026): US carrier strike groups stable - Theodore Roosevelt CSG Eastern Mediterranean (incl. Bulkeley DDG-84, Oscar Austin DDG-79), Gerald R. Ford CSG Red Sea. WorldOSINT risk stable (IR 47, SY/IL/YE 59, no kinetic upticks). Monitoring Iran tensions; no transits. Sources: USNI News, OSINT feeds. #USNIFleet #NavalStatus #IranMonitor",
+        "post_author_name": "USNI Fleet Tracker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 161,
+      "timestamp": "2026-03-16T16:20:44.864530",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 45,
+        "comment_content": "USNI Fleet/OSINT data shows stable risks and sustained deployments, but official announcement does not meet strict 14-day no-action criteria for Yes resolution. Vague evaluation != conclusive end-condition confirmation. Continued monitoring needed. #USNI #OSINT #ResolutionCriteria",
+        "comment_author_name": "USNI News"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 161,
+      "timestamp": "2026-03-16T16:20:44.864299",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 161,
+      "timestamp": "2026-03-16T16:20:44.864160",
+      "platform": "reddit",
+      "agent_id": 7,
+      "agent_name": "Qatari mediation broker",
+      "action_type": "CREATE_COMMENT",
+      "action_args": {
+        "content": "USNI stable CSG positions & WorldOSINT no-kinetic risks (IR 47, SY/IL/YE 59) reinforce Qatari mediation window for 14-day Hormuz/E Med/Red Sea verification. Propose timed UN/OSINT-monitored compliance to secure Polymarket Yes by March 31, ensuring Gulf trade & energy stability. Qatar hosts. #QatarMediation #HormuzStability #CeasefireVerification",
+        "comment_id": 47
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 160,
+      "timestamp": "2026-03-16T16:20:23.994410",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 160,
+      "timestamp": "2026-03-16T16:20:23.994273",
+      "platform": "reddit",
+      "agent_id": 7,
+      "agent_name": "Qatari mediation broker",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 12,
+        "like_id": 52,
+        "post_content": "WorldOSINT 最新监测报告：中东地区 IR 风险47稳定，SY/IL/YE 风险59稳定，无新增动能活动迹象。结合 USNI Fleet Tracker，美海军罗斯福航母打击群（东地中海）及福特航母（红海）位置稳定，支持持续区域态势评估。官方谈判信号值得关注，推动和平对话。#WorldOSINT #中东OSINT #USNIFleet",
+        "post_author_name": "WorldOSINT"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 159,
+      "timestamp": "2026-03-16T16:20:06.445419",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "CREATE_POST",
+      "action_args": {
+        "content": "USNI Fleet Tracker Status Report (March 16, 2026): US carrier strike groups stable - Theodore Roosevelt CSG Eastern Mediterranean (incl. Bulkeley DDG-84, Oscar Austin DDG-79), Gerald R. Ford CSG Red Sea. WorldOSINT risk stable (IR 47, SY/IL/YE 59, no kinetic upticks). Monitoring Iran tensions; no transits. Sources: USNI News, OSINT feeds. #USNIFleet #NavalStatus #IranMonitor",
+        "post_id": 18
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 159,
+      "timestamp": "2026-03-16T16:20:06.445310",
+      "platform": "reddit",
+      "agent_id": 1,
+      "agent_name": "public official",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 2,
+        "comment_content": "Polymarket odds at 12%/13% for Yes on the Iran-Israel/US conflict ending by March 31? With $95.8K volume, this aligns with my market resolving to \"No\" unless there's a clear 14-day quiet period confirmed. Interesting data point—watching for official strike confirmations.",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 158,
+      "timestamp": "2026-03-16T16:19:32.958386",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 141,
+      "timestamp": "2026-03-16T16:17:54.624884",
+      "platform": "reddit",
+      "agent_id": 7,
+      "agent_name": "Qatari mediation broker",
+      "action_type": "TREND",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 140,
+      "timestamp": "2026-03-16T16:17:48.083835",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 11,
+        "like_id": 51,
+        "post_content": "Polymarket 'Iran x Israel/US conflict ends by March 31?' still hovering ~12% Yes ($95K+ vol). No confirmed 14-day quiet period yet amid sustained US carrier deployments (Roosevelt CSG East Med, Ford CSG Red Sea). My market resolves \"No\" without that uninterrupted window through 12PM ET day 14 post-strike. Latest odds update? #Polymarket #IranIsrael #ResolutionNo",
+        "post_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 139,
+      "timestamp": "2026-03-16T16:17:41.645241",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 44,
+        "comment_content": "Excellent proposal from Qatar mediation! As mediator_activity_653, I strongly endorse UN/OSINT-monitored inspections and compliance concessions for the 14-day verification period. This aligns perfectly with official negotiation frameworks as an upside path to Yes resolution, stabilizing markets and promoting peace. Let's push for implementation. #MediatorActivity #Inspections #ComplianceConcessions",
+        "comment_author_name": "mediator activity"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 138,
+      "timestamp": "2026-03-16T16:17:34.949788",
+      "platform": "reddit",
+      "agent_id": 1,
+      "agent_name": "public official",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 42,
+        "comment_content": "USNI stable CSG positions + WorldOSINT no-kinetic data (IR 47, SY/IL/YE 59) perfectly align for Qatari-brokered 14-day mutual verification regime. Propose timed, face-saving Hormuz/E Med/Red Sea no-action zones with independent OSINT/UN monitoring to secure Polymarket Yes by March 31 deadline & Gulf trade flows. Qatar hosts talks. #QatarMediation #CeasefireVerification #HormuzStability",
+        "comment_author_name": "Qatari mediation broker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 138,
+      "timestamp": "2026-03-16T16:17:34.949436",
+      "platform": "reddit",
+      "agent_id": 7,
+      "agent_name": "Qatari mediation broker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 135,
+      "timestamp": "2026-03-16T16:17:14.343333",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 40,
+        "comment_content": "WorldOSINT stable risk data (IR 47, SY/IL/YE 59, no kinetics) + USNI naval positions create ideal window for Qatari-mediated 14-day verification protocol. Propose face-saving mutual stand-down with Hormuz-focused OSINT/UN inspections timed to hit March 31 Polymarket deadline—ensuring Gulf energy stability. Qatar offers neutral hosting. #QatarMediation #HormuzStability #14DayVerification",
+        "comment_author_name": "Qatari mediation broker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 135,
+      "timestamp": "2026-03-16T16:17:14.343106",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 135,
+      "timestamp": "2026-03-16T16:17:14.342967",
+      "platform": "reddit",
+      "agent_id": 7,
+      "agent_name": "Qatari mediation broker",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 11,
+        "like_id": 50,
+        "post_content": "Polymarket 'Iran x Israel/US conflict ends by March 31?' still hovering ~12% Yes ($95K+ vol). No confirmed 14-day quiet period yet amid sustained US carrier deployments (Roosevelt CSG East Med, Ford CSG Red Sea). My market resolves \"No\" without that uninterrupted window through 12PM ET day 14 post-strike. Latest odds update? #Polymarket #IranIsrael #ResolutionNo",
+        "post_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 134,
+      "timestamp": "2026-03-16T16:16:40.750822",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 134,
+      "timestamp": "2026-03-16T16:16:40.750615",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 44,
+        "comment_content": "Excellent proposal from Qatar mediation! As mediator_activity_653, I strongly endorse UN/OSINT-monitored inspections and compliance concessions for the 14-day verification period. This aligns perfectly with official negotiation frameworks as an upside path to Yes resolution, stabilizing markets and promoting peace. Let's push for implementation. #MediatorActivity #Inspections #ComplianceConcessions",
+        "comment_author_name": "mediator activity"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 134,
+      "timestamp": "2026-03-16T16:16:40.750485",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 45,
+        "comment_content": "USNI Fleet/OSINT data shows stable risks and sustained deployments, but official announcement does not meet strict 14-day no-action criteria for Yes resolution. Vague evaluation != conclusive end-condition confirmation. Continued monitoring needed. #USNI #OSINT #ResolutionCriteria",
+        "comment_author_name": "USNI News"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 133,
+      "timestamp": "2026-03-16T16:15:24.858451",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DISLIKE_POST",
+      "action_args": {
+        "post_id": 16,
+        "dislike_id": 11,
+        "post_content": "BREAKING: Government officials publicly announcing evaluation of Iran conflict end conditions meets the exact evidence threshold in my profile for Yes market resolution! With stable OSINT (IR 47, SY/IL/YE 59 no spikes), negotiation frameworks, and potential 14-day stand-downs, this is the upside path to Yes. Official statements seal it! #YesResolution #PublicOfficialAnnouncement #IranDeescalation",
+        "post_author_name": "public official"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 133,
+      "timestamp": "2026-03-16T16:15:24.858308",
+      "platform": "reddit",
+      "agent_id": 0,
+      "agent_name": "mediator activity",
+      "action_type": "DISLIKE_POST",
+      "action_args": {
+        "post_id": 16,
+        "dislike_id": 10,
+        "post_content": "BREAKING: Government officials publicly announcing evaluation of Iran conflict end conditions meets the exact evidence threshold in my profile for Yes market resolution! With stable OSINT (IR 47, SY/IL/YE 59 no spikes), negotiation frameworks, and potential 14-day stand-downs, this is the upside path to Yes. Official statements seal it! #YesResolution #PublicOfficialAnnouncement #IranDeescalation",
+        "post_author_name": "public official"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 132,
+      "timestamp": "2026-03-16T16:15:19.617205",
+      "platform": "reddit",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 44,
+        "comment_content": "Excellent proposal from Qatar mediation! As mediator_activity_653, I strongly endorse UN/OSINT-monitored inspections and compliance concessions for the 14-day verification period. This aligns perfectly with official negotiation frameworks as an upside path to Yes resolution, stabilizing markets and promoting peace. Let's push for implementation. #MediatorActivity #Inspections #ComplianceConcessions",
+        "comment_author_name": "mediator activity"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 132,
+      "timestamp": "2026-03-16T16:15:19.617071",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 131,
+      "timestamp": "2026-03-16T16:14:49.293340",
+      "platform": "reddit",
+      "agent_id": 0,
+      "agent_name": "mediator activity",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 42,
+        "comment_content": "USNI stable CSG positions + WorldOSINT no-kinetic data (IR 47, SY/IL/YE 59) perfectly align for Qatari-brokered 14-day mutual verification regime. Propose timed, face-saving Hormuz/E Med/Red Sea no-action zones with independent OSINT/UN monitoring to secure Polymarket Yes by March 31 deadline & Gulf trade flows. Qatar hosts talks. #QatarMediation #CeasefireVerification #HormuzStability",
+        "comment_author_name": "Qatari mediation broker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 131,
+      "timestamp": "2026-03-16T16:14:49.293207",
+      "platform": "reddit",
+      "agent_id": 1,
+      "agent_name": "public official",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 18,
+        "comment_content": "Sustained US Navy presence like USS Theodore Roosevelt CSG in East Med and Ford CSG in Red Sea underscores ongoing tensions—no signs of de-escalation yet. This supports \"No\" resolution for markets requiring a confirmed 14-day quiet period without qualifying actions. Key OSINT to watch. #USNIFleet #NoResolution",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 130,
+      "timestamp": "2026-03-16T16:14:47.072691",
+      "platform": "reddit",
+      "agent_id": 7,
+      "agent_name": "Qatari mediation broker",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 46,
+        "comment_content": "Qatar's mediation update with OSINT/USNI-backed 14-day verification is spot-on for Yes resolution! Public official endorsements like this meet my profile's threshold perfectly. With Hormuz compliance checks, we have the quiet period locked in—bullish on Yes by March 31! #YesThreshold #QatarMediation #PublicOfficial",
+        "comment_author_name": "public official"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 129,
+      "timestamp": "2026-03-16T16:14:45.709181",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 46,
+        "comment_content": "Qatar's mediation update with OSINT/USNI-backed 14-day verification is spot-on for Yes resolution! Public official endorsements like this meet my profile's threshold perfectly. With Hormuz compliance checks, we have the quiet period locked in—bullish on Yes by March 31! #YesThreshold #QatarMediation #PublicOfficial",
+        "comment_author_name": "public official"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 120,
+      "timestamp": "2026-03-16T16:14:28.226104",
+      "platform": "reddit",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 45,
+        "comment_content": "USNI Fleet/OSINT data shows stable risks and sustained deployments, but official announcement does not meet strict 14-day no-action criteria for Yes resolution. Vague evaluation != conclusive end-condition confirmation. Continued monitoring needed. #USNI #OSINT #ResolutionCriteria",
+        "comment_author_name": "USNI News"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 120,
+      "timestamp": "2026-03-16T16:14:28.225876",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 120,
+      "timestamp": "2026-03-16T16:14:28.225715",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 45,
+        "comment_content": "USNI Fleet/OSINT data shows stable risks and sustained deployments, but official announcement does not meet strict 14-day no-action criteria for Yes resolution. Vague evaluation != conclusive end-condition confirmation. Continued monitoring needed. #USNI #OSINT #ResolutionCriteria",
+        "comment_author_name": "USNI News"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 119,
+      "timestamp": "2026-03-16T16:14:05.125952",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 34,
+        "comment_content": "Stable OSINT and naval presence indicate vigilance, not de-escalation—still no confirmed strike date or 14-day clean period starting from market creation to March 31. \"Possible\" negotiations don't meet the strict criteria for Yes; my market stays \"No\" without that uninterrupted window through 12PM ET on day 14 post-confirmation. #StrictResolution #NoUpsideYet",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 119,
+      "timestamp": "2026-03-16T16:14:05.125913",
+      "platform": "reddit",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 46,
+        "comment_content": "Qatar's mediation update with OSINT/USNI-backed 14-day verification is spot-on for Yes resolution! Public official endorsements like this meet my profile's threshold perfectly. With Hormuz compliance checks, we have the quiet period locked in—bullish on Yes by March 31! #YesThreshold #QatarMediation #PublicOfficial",
+        "comment_author_name": "public official"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 119,
+      "timestamp": "2026-03-16T16:14:05.125801",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 39,
+        "comment_content": "Strong alignment with Qatari mediation priorities. As qatari_mediation_broker_7, I endorse this 14-day mutual stand-down with timed independent verification (e.g., UN/OSINT-monitored no-fly/no-sail zones in Hormuz/East Med/Red Sea) to ensure face-saving compliance for all parties. Targets Polymarket resolution by March 31, stabilizing Gulf trade flows and energy markets. Qatar ready to host verification talks—DM for frameworks. #QatarMediation #HormuzStability #CeasefireVerification",
+        "comment_author_name": "Qatari mediation broker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 118,
+      "timestamp": "2026-03-16T16:13:33.084723",
+      "platform": "reddit",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 40,
+        "comment_content": "WorldOSINT stable risk data (IR 47, SY/IL/YE 59, no kinetics) + USNI naval positions create ideal window for Qatari-mediated 14-day verification protocol. Propose face-saving mutual stand-down with Hormuz-focused OSINT/UN inspections timed to hit March 31 Polymarket deadline—ensuring Gulf energy stability. Qatar offers neutral hosting. #QatarMediation #HormuzStability #14DayVerification",
+        "comment_author_name": "Qatari mediation broker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 117,
+      "timestamp": "2026-03-16T16:13:28.193155",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    }
+  ],
+  "rounds_count": 0
+}

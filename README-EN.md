@@ -123,27 +123,34 @@ cp .env.example .env
 **Required Environment Variables:**
 
 ```env
-# LLM API Configuration (supports any LLM API with OpenAI SDK format)
-# Recommended: Alibaba Qwen-plus model via Bailian Platform: https://bailian.console.aliyun.com/
-# High consumption, try simulations with fewer than 40 rounds first
-LLM_API_KEY=your_api_key
-LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-LLM_MODEL_NAME=qwen-plus
+# Local LLM configuration (recommended default: Ollama + Qwen for a fully local loop)
+LLM_API_KEY=ollama
+LLM_BASE_URL=http://127.0.0.1:11434/v1
+LLM_MODEL_NAME=qwen2.5:7b
+LOCAL_LLM_REQUEST_TIMEOUT_SECONDS=900
+LOCAL_LLM_MAX_TOKENS=192
 
 # Graph backend selection (start with local unless you need Zep)
 # Valid values: auto | local | zep
 GRAPH_BACKEND=local
+LOCAL_GRAPH_EXTRACTION_MODE=fast
+LOCAL_SIMULATION_PROFILE=lean
+LOCAL_SIM_MAX_AGENTS=48
+LOCAL_SIM_MAX_ROUNDS=16
 
 # Zep Cloud Configuration (required only when GRAPH_BACKEND=zep)
-# Free monthly quota is sufficient for simple usage: https://app.getzep.com/
-ZEP_API_KEY=your_zep_api_key
+# Leave unset in local mode so the runtime stays unambiguous.
+# ZEP_API_KEY=your_zep_api_key
 ```
 
 Notes:
 
 - `GRAPH_BACKEND=local` stores graphs in `backend/uploads/graphs/*.sqlite3` and removes the Zep dependency.
+- `LOCAL_GRAPH_EXTRACTION_MODE=fast` keeps local graph builds responsive by using rule-based extraction first; switch it to `llm` only if you explicitly want heavier local graph extraction.
+- `LOCAL_SIMULATION_PROFILE=lean`, `LOCAL_SIM_MAX_AGENTS=48`, and `LOCAL_SIM_MAX_ROUNDS=16` are the repo defaults for local PrediHermes so Ollama/Qwen can complete the loop on one machine instead of assuming cloud throughput.
 - `GRAPH_BACKEND=auto` uses Zep only when `ZEP_API_KEY` is present, otherwise it falls back to local SQLite.
 - `GRAPH_BACKEND=zep` forces the Zep backend and therefore requires `ZEP_API_KEY`.
+- The default local model path used in this repo is `Ollama -> qwen2.5:7b` via `http://127.0.0.1:11434/v1`.
 
 #### 2. Install Dependencies
 

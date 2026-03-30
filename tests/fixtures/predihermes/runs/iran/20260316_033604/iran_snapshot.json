@@ -1,0 +1,326 @@
+{
+  "generated_at": "2026-03-16T03:36:08.783932+00:00",
+  "topic_id": "iran",
+  "topic": "Iran",
+  "market_query": "Iran",
+  "keywords": [
+    "Iran"
+  ],
+  "worldosint_base_url": "http://127.0.0.1:3000",
+  "mirofish_base_url": "http://127.0.0.1:5001",
+  "markets": [
+    {
+      "slug": "iran-x-israelus-conflict-ends-by-march-31",
+      "question": "Iran x Israel/US conflict ends by March 31?",
+      "description": "This market will resolve to \"Yes\" if there is a continuous 14-day period without any qualifying military action between Iran, and Israel and the United States that begins at any time between market creation and the specified end date (ET). Otherwise, this market will resolve to \"No\". \n\nThe 14-day period may begin at any time between the creation of this market and the specified end date (ET), and must continue uninterrupted through 12:00 PM ET on the 14th calendar day after the strike is confirmed. \n\nA \"military action\" is defined as any use of force by Iran, or Israel and the United States against the other’s soil, or official embassies or consulates, that is either officially acknowledged by the acting government or confirmed through a clear consensus of credible reporting. \n\nThis includes, but is not limited to, airstrikes, naval attacks, and ground incursions. \n\nCyberattacks, sanctions, and diplomatic actions do not count. \n\nOnly actions by Iranian forces explicitly claimed by the Islamic Republic of Iran, or confirmed to have originated from Iranian territory will qualify as Iranian military actions. Attacks on Israel or the US by proxy forces (i.e. Hezbollah, Houthis, etc.) will not count.",
+      "url": "https://polymarket.com/event/iran-x-israelus-conflict-ends-by-march-31",
+      "endDate": "2026-03-31T00:00:00Z",
+      "volumeNum": 1532184.1285069976,
+      "liquidityNum": 95762.6594,
+      "bestBid": 0.12,
+      "bestAsk": 0.13,
+      "spread": 0.01,
+      "acceptingOrders": true,
+      "conditionId": "0x5a200d7d560169d60dc82cd16bb14c16f36f029fdf609dcb92d06a554f9f0fe1",
+      "clobTokenIds": [
+        "112937628087331697317065233168528083229287804207100901534711974468554098083004",
+        "60020156117014074723286818065417148342963800223162713452237763775488251828713"
+      ],
+      "outcomes": [
+        "Yes",
+        "No"
+      ],
+      "outcomePrices": [
+        "0.125",
+        "0.875"
+      ],
+      "lastTradePrice": 0.13
+    },
+    {
+      "slug": "iran-x-israelus-conflict-ends-by-april-15-618",
+      "question": "Iran x Israel/US conflict ends by April 15?",
+      "description": "This market will resolve to \"Yes\" if there is a continuous 14-day period without any qualifying military action between Iran, and Israel and the United States that begins at any time between market creation and the specified end date (ET). Otherwise, this market will resolve to \"No\". \n\nThe 14-day period may begin at any time between the creation of this market and the specified end date (ET), and must continue uninterrupted through 12:00 PM ET on the 14th calendar day after the strike is confirmed. \n\nA \"military action\" is defined as any use of force by Iran, or Israel and the United States against the other’s soil, or official embassies or consulates, that is either officially acknowledged by the acting government or confirmed through a clear consensus of credible reporting. \n\nThis includes, but is not limited to, airstrikes, naval attacks, and ground incursions. \n\nCyberattacks, sanctions, and diplomatic actions do not count. \n\nOnly actions by Iranian forces explicitly claimed by the Islamic Republic of Iran, or confirmed to have originated from Iranian territory will qualify as Iranian military actions. Attacks on Israel or the US by proxy forces (i.e. Hezbollah, Houthis, etc.) will not count.",
+      "url": "https://polymarket.com/event/iran-x-israelus-conflict-ends-by-april-15-618",
+      "endDate": "2026-04-15T00:00:00Z",
+      "volumeNum": 154898.07250700015,
+      "liquidityNum": 67072.8819,
+      "bestBid": 0.34,
+      "bestAsk": 0.35,
+      "spread": 0.01,
+      "acceptingOrders": true,
+      "conditionId": "0x5c2e6aef8af5931e9bfa3750364626d754531d2fada2885d45c356b175962a25",
+      "clobTokenIds": [
+        "91851388830923641218615793149765322805282194001900444983744404881757241655792",
+        "42541597022580268380579424081239402820400625604765321493406160729090848893639"
+      ],
+      "outcomes": [
+        "Yes",
+        "No"
+      ],
+      "outcomePrices": [
+        "0.345",
+        "0.655"
+      ],
+      "lastTradePrice": 0.36
+    },
+    {
+      "slug": "us-x-iran-ceasefire-by-april-15-182",
+      "question": "US x Iran ceasefire by April 15?",
+      "description": "This market will resolve to “Yes” if there is an official ceasefire agreement, defined as a publicly announced and mutually agreed halt in direct military engagement, between the United States and Iran by the listed date, 11:59 PM ET.\n\nFor the purposes of this market, an “official ceasefire agreement” requires clear public confirmation from both the United States government and the government of Iran that they have agreed to halt military hostilities against one another.\n\nIf the agreement is officially reached before the resolution date, this market will resolve to “Yes,” regardless of whether the ceasefire officially takes effect after the resolution date.\n\nAny form of informal understanding, backchannel communication, de-escalation without an announced agreement, or unilateral pause in hostilities will not be considered an official ceasefire. Humanitarian pauses, limited operational pauses, or temporary tactical stand-downs will not count toward the resolution of this market.\n\nA broader peace deal, normalization agreement, or political framework will qualify only if it includes a publicly announced and mutually agreed halt in military engagement between the United States and Iran, effective on a specified date, or otherwise confirmed by an overwhelming consensus of credible reporting. Agreements that outline future negotiations or de-escalation measures without an explicit, dated commitment to stop fighting will not qualify.\n\nThis market’s resolution will be based on official statements from the United States government and the government of Iran. However, a wide consensus of credible media reporting confirming that an official ceasefire agreement has been reached will suffice.",
+      "url": "https://polymarket.com/event/us-x-iran-ceasefire-by-april-15-182",
+      "endDate": "2026-04-15T00:00:00Z",
+      "volumeNum": 225864.1860209996,
+      "liquidityNum": 74862.9551,
+      "bestBid": 0.25,
+      "bestAsk": 0.26,
+      "spread": 0.01,
+      "acceptingOrders": true,
+      "conditionId": "0x773abaa5fe55e5cde51a261f444b7921652a4e059ead6b3be9fe56499c2d4609",
+      "clobTokenIds": [
+        "85191934649046129480174964255278880752271767733539167443243111973456166096127",
+        "8442709013751543525223072638303914942960068246422295030411662679470140144155"
+      ],
+      "outcomes": [
+        "Yes",
+        "No"
+      ],
+      "outcomePrices": [
+        "0.255",
+        "0.745"
+      ],
+      "lastTradePrice": 0.26
+    }
+  ],
+  "news": {
+    "feeds": [
+      "https://news.google.com/rss/search?q=Iran%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+      "https://news.google.com/rss/search?q=site%3Areuters.com%20Iran%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+      "https://news.google.com/rss/search?q=site%3Aapnews.com%20Iran%20when%3A7d&hl=en-US&gl=US&ceid=US:en",
+      "https://www.aljazeera.com/xml/rss/all.xml",
+      "https://www.state.gov/feed/",
+      "https://www.defense.gov/News/News-Stories/RSS/",
+      "https://news.usni.org/feed"
+    ],
+    "items": [],
+    "themes": [],
+    "actors": []
+  },
+  "context": {
+    "riskRows": [
+      {
+        "region": "UA",
+        "staticBaseline": 50,
+        "dynamicScore": 9,
+        "combinedScore": 59,
+        "trend": "TREND_DIRECTION_STABLE",
+        "components": {
+          "newsActivity": 0,
+          "ciiContribution": 0,
+          "geoConvergence": 0,
+          "militaryActivity": 0
+        },
+        "computedAt": 1773631967237
+      },
+      {
+        "region": "SY",
+        "staticBaseline": 50,
+        "dynamicScore": 9,
+        "combinedScore": 59,
+        "trend": "TREND_DIRECTION_STABLE",
+        "components": {
+          "newsActivity": 0,
+          "ciiContribution": 0,
+          "geoConvergence": 0,
+          "militaryActivity": 0
+        },
+        "computedAt": 1773631967237
+      },
+      {
+        "region": "YE",
+        "staticBaseline": 50,
+        "dynamicScore": 9,
+        "combinedScore": 59,
+        "trend": "TREND_DIRECTION_STABLE",
+        "components": {
+          "newsActivity": 0,
+          "ciiContribution": 0,
+          "geoConvergence": 0,
+          "militaryActivity": 0
+        },
+        "computedAt": 1773631967237
+      },
+      {
+        "region": "IL",
+        "staticBaseline": 45,
+        "dynamicScore": 8,
+        "combinedScore": 53,
+        "trend": "TREND_DIRECTION_STABLE",
+        "components": {
+          "newsActivity": 0,
+          "ciiContribution": 0,
+          "geoConvergence": 0,
+          "militaryActivity": 0
+        },
+        "computedAt": 1773631967237
+      },
+      {
+        "region": "KP",
+        "staticBaseline": 45,
+        "dynamicScore": 8,
+        "combinedScore": 53,
+        "trend": "TREND_DIRECTION_STABLE",
+        "components": {
+          "newsActivity": 0,
+          "ciiContribution": 0,
+          "geoConvergence": 0,
+          "militaryActivity": 0
+        },
+        "computedAt": 1773631967237
+      },
+      {
+        "region": "MM",
+        "staticBaseline": 45,
+        "dynamicScore": 8,
+        "combinedScore": 53,
+        "trend": "TREND_DIRECTION_STABLE",
+        "components": {
+          "newsActivity": 0,
+          "ciiContribution": 0,
+          "geoConvergence": 0,
+          "militaryActivity": 0
+        },
+        "computedAt": 1773631967237
+      },
+      {
+        "region": "IR",
+        "staticBaseline": 40,
+        "dynamicScore": 7,
+        "combinedScore": 47,
+        "trend": "TREND_DIRECTION_STABLE",
+        "components": {
+          "newsActivity": 0,
+          "ciiContribution": 0,
+          "geoConvergence": 0,
+          "militaryActivity": 0
+        },
+        "computedAt": 1773631967237
+      },
+      {
+        "region": "VE",
+        "staticBaseline": 40,
+        "dynamicScore": 7,
+        "combinedScore": 47,
+        "trend": "TREND_DIRECTION_STABLE",
+        "components": {
+          "newsActivity": 0,
+          "ciiContribution": 0,
+          "geoConvergence": 0,
+          "militaryActivity": 0
+        },
+        "computedAt": 1773631967237
+      }
+    ],
+    "usniArticleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026",
+    "usniArticleTitle": "USNI News Fleet and Marine Tracker: March 9, 2026",
+    "theaterAssets": [
+      {
+        "name": "USS Roosevelt",
+        "hullNumber": "DDG-80",
+        "type": "destroyer",
+        "region": "Eastern Mediterranean Sea",
+        "status": "deployed",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Bulkeley",
+        "hullNumber": "DDG-84",
+        "type": "destroyer",
+        "region": "Eastern Mediterranean Sea",
+        "status": "deployed",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Oscar Austin",
+        "hullNumber": "DDG-79",
+        "type": "destroyer",
+        "region": "Eastern Mediterranean Sea",
+        "status": "deployed",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Thomas Hudner",
+        "hullNumber": "DDG-116",
+        "type": "destroyer",
+        "region": "Eastern Mediterranean Sea",
+        "status": "deployed",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Gerald R. Ford",
+        "hullNumber": "CVN-78",
+        "type": "carrier",
+        "region": "Red Sea",
+        "status": "underway",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Winston S. Churchill",
+        "hullNumber": "DDG-81",
+        "type": "destroyer",
+        "region": "Red Sea",
+        "status": "underway",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Bainbridge",
+        "hullNumber": "DDG-96",
+        "type": "destroyer",
+        "region": "Red Sea",
+        "status": "underway",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Mahan",
+        "hullNumber": "DDG-72",
+        "type": "destroyer",
+        "region": "Red Sea",
+        "status": "underway",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Tulsa",
+        "hullNumber": "LCS-16",
+        "type": "frigate",
+        "region": "Persian Gulf",
+        "status": "unknown",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Santa Barbara",
+        "hullNumber": "LCS-32",
+        "type": "frigate",
+        "region": "Persian Gulf",
+        "status": "unknown",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Abraham Lincoln",
+        "hullNumber": "CVN-72",
+        "type": "carrier",
+        "region": "Arabian Sea",
+        "status": "deployed",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      },
+      {
+        "name": "USS Frank E. Petersen, Jr.",
+        "hullNumber": "DDG-121",
+        "type": "destroyer",
+        "region": "Arabian Sea",
+        "status": "deployed",
+        "articleUrl": "https://news.usni.org/2026/03/09/usni-news-fleet-and-marine-tracker-march-9-2026"
+      }
+    ]
+  },
+  "seed_path": "/Users/native/.hermes/data/geopolitical-market-sim/runs/iran/20260316_033604/iran_seed.md",
+  "simulate": true
+}

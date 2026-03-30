@@ -58,3 +58,7 @@ backend/uploads/
 
 # Docker 数据
 data/
+
+# Rust / CLI build artifacts
+target/
+tools/predihermes_tui/target/

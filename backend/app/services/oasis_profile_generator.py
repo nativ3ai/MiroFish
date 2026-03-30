@@ -9,6 +9,7 @@ OASIS Agent Profile生成器
 """
 
 import json
+import hashlib
 import random
 import time
 from typing import Dict, Any, List, Optional
@@ -24,8 +25,77 @@ except Exception:  # pragma: no cover - optional for local graph backend mode
 from ..config import Config
 from ..utils.logger import get_logger
 from .zep_entity_reader import EntityNode, ZepEntityReader
+from .entity_quality import infer_entity_role, normalize_entity_key
 
 logger = get_logger('mirofish.oasis_profile')
+
+
+PROFILE_OVERRIDE_FIELDS = {
+    "name",
+    "user_name",
+    "bio",
+    "persona",
+    "karma",
+    "friend_count",
+    "follower_count",
+    "statuses_count",
+    "age",
+    "gender",
+    "mbti",
+    "country",
+    "profession",
+    "interested_topics",
+    "entity_type",
+}
+
+
+def normalize_profile_overrides(raw: Any) -> Dict[str, Dict[str, Dict[str, Any]]]:
+    by_uuid: Dict[str, Dict[str, Any]] = {}
+    by_name: Dict[str, Dict[str, Any]] = {}
+
+    if isinstance(raw, dict) and isinstance(raw.get("entities"), list):
+        items = raw.get("entities") or []
+    elif isinstance(raw, list):
+        items = raw
+    elif isinstance(raw, dict):
+        items = []
+        for key, value in raw.items():
+            if not isinstance(value, dict):
+                continue
+            entry = dict(value)
+            entry.setdefault("name", key)
+            items.append(entry)
+    else:
+        items = []
+
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        enabled = bool(item.get("enabled", True))
+        profile = dict(item.get("profile")) if isinstance(item.get("profile"), dict) else {
+            field: item[field]
+            for field in PROFILE_OVERRIDE_FIELDS
+            if field in item
+        }
+        if "entity_type" in item and "entity_type" not in profile:
+            profile["entity_type"] = item["entity_type"]
+        record = {"enabled": enabled, "profile": profile}
+        entity_uuid = str(item.get("source_entity_uuid") or item.get("uuid") or "").strip()
+        entity_name = str(item.get("name") or "").strip()
+        if entity_uuid:
+            by_uuid[entity_uuid] = record
+        if entity_name:
+            by_name[normalize_entity_key(entity_name)] = record
+
+    return {"by_uuid": by_uuid, "by_name": by_name}
+
+
+def entity_override_for(entity: EntityNode, overrides: Dict[str, Dict[str, Dict[str, Any]]]) -> Dict[str, Any]:
+    if not overrides:
+        return {}
+    by_uuid = overrides.get("by_uuid") or {}
+    by_name = overrides.get("by_name") or {}
+    return by_uuid.get(entity.uuid) or by_name.get(normalize_entity_key(entity.name)) or {}
 
 
 @dataclass
@@ -177,7 +247,7 @@ class OasisProfileGenerator:
     # 群体/机构类型实体（需要生成群体代表人设）
     GROUP_ENTITY_TYPES = [
         "university", "governmentagency", "organization", "ngo", 
-        "mediaoutlet", "company", "institution", "group", "community"
+        "mediaoutlet", "company", "institution", "group", "community", "nationstate"
     ]
     
     def __init__(
@@ -191,31 +261,41 @@ class OasisProfileGenerator:
         self.api_key = api_key or Config.LLM_API_KEY
         self.base_url = base_url or Config.LLM_BASE_URL
         self.model_name = model_name or Config.LLM_MODEL_NAME
+        self.client: Optional[OpenAI] = None
+
+        if self.api_key:
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url=self.base_url
+            )
         
-        if not self.api_key:
-            raise ValueError("LLM_API_KEY 未配置")
-        
-        self.client = OpenAI(
-            api_key=self.api_key,
-            base_url=self.base_url
-        )
-        
-        # Zep客户端用于检索丰富上下文
+        # Zep客户端用于检索丰富上下文。仅在显式使用 Zep 图谱 backend 时启用；
+        # 否则即使环境里残留 ZEP_API_KEY，也不应让本地模式回退到 Zep。
         self.zep_api_key = zep_api_key or Config.ZEP_API_KEY
         self.zep_client = None
         self.graph_id = graph_id
-        
-        if self.zep_api_key and Zep is not None:
+        self.graph_backend = Config.resolved_graph_backend()
+        self.enable_zep_context = self.graph_backend == "zep"
+
+        if self.enable_zep_context and self.zep_api_key and Zep is not None:
             try:
                 self.zep_client = Zep(api_key=self.zep_api_key)
             except Exception as e:
                 logger.warning(f"Zep客户端初始化失败: {e}")
+        elif self.zep_api_key and self.graph_backend != "zep":
+            logger.info("GRAPH_BACKEND 非 zep，跳过 Zep 上下文检索")
+
+    def _require_client(self) -> OpenAI:
+        if self.client is None:
+            raise ValueError("LLM_API_KEY 未配置")
+        return self.client
     
     def generate_profile_from_entity(
         self, 
         entity: EntityNode, 
         user_id: int,
-        use_llm: bool = True
+        use_llm: bool = True,
+        profile_override: Optional[Dict[str, Any]] = None,
     ) -> OasisAgentProfile:
         """
         从Zep实体生成OASIS Agent Profile
@@ -228,11 +308,13 @@ class OasisProfileGenerator:
         Returns:
             OasisAgentProfile
         """
-        entity_type = entity.get_entity_type() or "Entity"
+        entity_type = self._resolve_entity_type(entity, profile_override)
+        profile_override = profile_override or {}
+        rng = self._rng_for_entity(entity)
         
         # 基础信息
-        name = entity.name
-        user_name = self._generate_username(name)
+        name = str(profile_override.get("name") or entity.name)
+        user_name = str(profile_override.get("user_name") or self._generate_username(name, entity.uuid))
         
         # 构建上下文信息
         context = self._build_entity_context(entity)
@@ -252,8 +334,10 @@ class OasisProfileGenerator:
                 entity_name=name,
                 entity_type=entity_type,
                 entity_summary=entity.summary,
-                entity_attributes=entity.attributes
+                entity_attributes=entity.attributes,
+                rng=rng,
             )
+        profile_data = self._merge_profile_data(profile_data, profile_override)
         
         return OasisAgentProfile(
             user_id=user_id,
@@ -261,10 +345,10 @@ class OasisProfileGenerator:
             name=name,
             bio=profile_data.get("bio", f"{entity_type}: {name}"),
             persona=profile_data.get("persona", entity.summary or f"A {entity_type} named {name}."),
-            karma=profile_data.get("karma", random.randint(500, 5000)),
-            friend_count=profile_data.get("friend_count", random.randint(50, 500)),
-            follower_count=profile_data.get("follower_count", random.randint(100, 1000)),
-            statuses_count=profile_data.get("statuses_count", random.randint(100, 2000)),
+            karma=profile_data.get("karma", rng.randint(500, 5000)),
+            friend_count=profile_data.get("friend_count", rng.randint(50, 500)),
+            follower_count=profile_data.get("follower_count", rng.randint(100, 1000)),
+            statuses_count=profile_data.get("statuses_count", rng.randint(100, 2000)),
             age=profile_data.get("age"),
             gender=profile_data.get("gender"),
             mbti=profile_data.get("mbti"),
@@ -275,15 +359,64 @@ class OasisProfileGenerator:
             source_entity_type=entity_type,
         )
     
-    def _generate_username(self, name: str) -> str:
+    def _generate_username(self, name: str, entity_key: str = "") -> str:
         """生成用户名"""
         # 移除特殊字符，转换为小写
         username = name.lower().replace(" ", "_")
         username = ''.join(c for c in username if c.isalnum() or c == '_')
-        
-        # 添加随机后缀避免重复
-        suffix = random.randint(100, 999)
-        return f"{username}_{suffix}"
+        username = username.strip("_") or "agent"
+
+        digest = hashlib.sha1(f"{entity_key}:{username}".encode("utf-8")).hexdigest()[:6]
+        return f"{username[:24]}_{digest}"
+
+    def _rng_for_entity(self, entity: EntityNode) -> random.Random:
+        seed = hashlib.sha1(f"{entity.uuid}:{entity.name}:{self._resolve_entity_type(entity)}".encode("utf-8")).hexdigest()
+        return random.Random(int(seed[:16], 16))
+
+    def _resolve_entity_type(self, entity: EntityNode, profile_override: Optional[Dict[str, Any]] = None) -> str:
+        override_type = str((profile_override or {}).get("entity_type") or "").strip()
+        if override_type:
+            return override_type
+        return infer_entity_role(entity.name, entity.get_entity_type() or "Entity")
+
+    def _merge_profile_data(self, base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
+        merged = dict(base or {})
+        for field in PROFILE_OVERRIDE_FIELDS:
+            value = override.get(field)
+            if value in (None, "", [], {}):
+                continue
+            merged[field] = value
+        return merged
+
+    def build_profile_manifest(self, entities: List[EntityNode]) -> Dict[str, Any]:
+        entries: List[Dict[str, Any]] = []
+        for entity in entities:
+            profile = self.generate_profile_from_entity(entity=entity, user_id=0, use_llm=False)
+            entries.append(
+                {
+                    "source_entity_uuid": entity.uuid,
+                    "name": entity.name,
+                    "entity_type": self._resolve_entity_type(entity),
+                    "enabled": True,
+                    "profile": {
+                        "name": profile.name,
+                        "user_name": profile.user_name,
+                        "bio": profile.bio,
+                        "persona": profile.persona,
+                        "profession": profile.profession,
+                        "country": profile.country,
+                        "gender": profile.gender,
+                        "age": profile.age,
+                        "mbti": profile.mbti,
+                        "interested_topics": profile.interested_topics,
+                    },
+                }
+            )
+        return {
+            "generated_at": datetime.now().isoformat(),
+            "entity_count": len(entries),
+            "entities": entries,
+        }
     
     def _search_zep_for_entity(self, entity: EntityNode) -> Dict[str, Any]:
         """
@@ -300,7 +433,7 @@ class OasisProfileGenerator:
         """
         import concurrent.futures
         
-        if not self.zep_client:
+        if not self.enable_zep_context or not self.zep_client:
             return {"facts": [], "node_summaries": [], "context": ""}
         
         entity_name = entity.name
@@ -529,7 +662,7 @@ class OasisProfileGenerator:
         
         for attempt in range(max_attempts):
             try:
-                response = self.client.chat.completions.create(
+                response = self._require_client().chat.completions.create(
                     model=self.model_name,
                     messages=[
                         {"role": "system", "content": self._get_system_prompt(is_individual)},
@@ -778,9 +911,11 @@ class OasisProfileGenerator:
         entity_name: str,
         entity_type: str,
         entity_summary: str,
-        entity_attributes: Dict[str, Any]
+        entity_attributes: Dict[str, Any],
+        rng: Optional[random.Random] = None,
     ) -> Dict[str, Any]:
         """使用规则生成基础人设"""
+        rng = rng or random.Random(0)
         
         # 根据实体类型生成不同的人设
         entity_type_lower = entity_type.lower()
@@ -789,10 +924,10 @@ class OasisProfileGenerator:
             return {
                 "bio": f"{entity_type} with interests in academics and social issues.",
                 "persona": f"{entity_name} is a {entity_type.lower()} who is actively engaged in academic and social discussions. They enjoy sharing perspectives and connecting with peers.",
-                "age": random.randint(18, 30),
-                "gender": random.choice(["male", "female"]),
-                "mbti": random.choice(self.MBTI_TYPES),
-                "country": random.choice(self.COUNTRIES),
+                "age": rng.randint(18, 30),
+                "gender": rng.choice(["male", "female"]),
+                "mbti": rng.choice(self.MBTI_TYPES),
+                "country": rng.choice(self.COUNTRIES),
                 "profession": "Student",
                 "interested_topics": ["Education", "Social Issues", "Technology"],
             }
@@ -801,10 +936,10 @@ class OasisProfileGenerator:
             return {
                 "bio": f"Expert and thought leader in their field.",
                 "persona": f"{entity_name} is a recognized {entity_type.lower()} who shares insights and opinions on important matters. They are known for their expertise and influence in public discourse.",
-                "age": random.randint(35, 60),
-                "gender": random.choice(["male", "female"]),
-                "mbti": random.choice(["ENTJ", "INTJ", "ENTP", "INTP"]),
-                "country": random.choice(self.COUNTRIES),
+                "age": rng.randint(35, 60),
+                "gender": rng.choice(["male", "female"]),
+                "mbti": rng.choice(["ENTJ", "INTJ", "ENTP", "INTP"]),
+                "country": rng.choice(self.COUNTRIES),
                 "profession": entity_attributes.get("occupation", "Expert"),
                 "interested_topics": ["Politics", "Economics", "Culture & Society"],
             }
@@ -820,7 +955,43 @@ class OasisProfileGenerator:
                 "profession": "Media",
                 "interested_topics": ["General News", "Current Events", "Public Affairs"],
             }
-        
+
+        elif entity_type_lower == "nationstate":
+            return {
+                "bio": f"State or national-interest voice for {entity_name}.",
+                "persona": f"{entity_name} represents a state-level geopolitical actor communicating strategic interests, deterrence, diplomacy, and security concerns.",
+                "age": 30,
+                "gender": "other",
+                "mbti": "INTJ",
+                "country": entity_name,
+                "profession": "State actor",
+                "interested_topics": ["Security", "Diplomacy", "Energy", "Regional Power"],
+            }
+
+        elif entity_type_lower == "company":
+            return {
+                "bio": f"Official account for {entity_name}. Markets, operations, and product updates.",
+                "persona": f"{entity_name} behaves like a market-facing company account that posts product, platform, or market updates with a commercial tone.",
+                "age": 30,
+                "gender": "other",
+                "mbti": "ENTJ",
+                "country": "US",
+                "profession": "Company",
+                "interested_topics": ["Markets", "Product", "Operations"],
+            }
+
+        elif entity_type_lower == "group":
+            return {
+                "bio": f"Collective actor account for {entity_name}.",
+                "persona": f"{entity_name} represents a coordinated group actor focused on strategy, pressure, and public signaling rather than individual biography.",
+                "age": 30,
+                "gender": "other",
+                "mbti": "ISTJ",
+                "country": rng.choice(self.COUNTRIES),
+                "profession": "Collective actor",
+                "interested_topics": ["Security", "Conflict", "Regional Dynamics"],
+            }
+
         elif entity_type_lower in ["university", "governmentagency", "ngo", "organization"]:
             return {
                 "bio": f"Official account of {entity_name}.",
@@ -838,10 +1009,10 @@ class OasisProfileGenerator:
             return {
                 "bio": entity_summary[:150] if entity_summary else f"{entity_type}: {entity_name}",
                 "persona": entity_summary or f"{entity_name} is a {entity_type.lower()} participating in social discussions.",
-                "age": random.randint(25, 50),
-                "gender": random.choice(["male", "female"]),
-                "mbti": random.choice(self.MBTI_TYPES),
-                "country": random.choice(self.COUNTRIES),
+                "age": rng.randint(25, 50),
+                "gender": rng.choice(["male", "female"]),
+                "mbti": rng.choice(self.MBTI_TYPES),
+                "country": rng.choice(self.COUNTRIES),
                 "profession": entity_type,
                 "interested_topics": ["General", "Social Issues"],
             }
@@ -858,7 +1029,8 @@ class OasisProfileGenerator:
         graph_id: Optional[str] = None,
         parallel_count: int = 5,
         realtime_output_path: Optional[str] = None,
-        output_platform: str = "reddit"
+        output_platform: str = "reddit",
+        profile_overrides: Optional[Any] = None,
     ) -> List[OasisAgentProfile]:
         """
         批量从实体生成Agent Profile（支持并行生成）
@@ -871,7 +1043,8 @@ class OasisProfileGenerator:
             parallel_count: 并行生成数量，默认5
             realtime_output_path: 实时写入的文件路径（如果提供，每生成一个就写入一次）
             output_platform: 输出平台格式 ("reddit" 或 "twitter")
-            
+            profile_overrides: 可选的人设覆盖配置，支持按 uuid 或 name 绑定
+
         Returns:
             Agent Profile列表
         """
@@ -881,8 +1054,19 @@ class OasisProfileGenerator:
         # 设置graph_id用于Zep检索
         if graph_id:
             self.graph_id = graph_id
+
+        normalized_overrides = normalize_profile_overrides(profile_overrides)
+        selected_entities = []
+        for entity in entities:
+            override = entity_override_for(entity, normalized_overrides)
+            if override and override.get("enabled") is False:
+                continue
+            selected_entities.append(entity)
         
-        total = len(entities)
+        total = len(selected_entities)
+        if total == 0:
+            logger.warning("Profile generation skipped because no entities remained after overrides")
+            return []
         profiles = [None] * total  # 预分配列表保持顺序
         completed_count = [0]  # 使用列表以便在闭包中修改
         lock = Lock()
@@ -920,13 +1104,15 @@ class OasisProfileGenerator:
         
         def generate_single_profile(idx: int, entity: EntityNode) -> tuple:
             """生成单个profile的工作函数"""
-            entity_type = entity.get_entity_type() or "Entity"
+            override = entity_override_for(entity, normalized_overrides)
+            entity_type = self._resolve_entity_type(entity, override.get("profile") if override else None)
             
             try:
                 profile = self.generate_profile_from_entity(
                     entity=entity,
                     user_id=idx,
-                    use_llm=use_llm
+                    use_llm=use_llm,
+                    profile_override=override.get("profile") if override else None,
                 )
                 
                 # 实时输出生成的人设到控制台和日志
@@ -958,13 +1144,14 @@ class OasisProfileGenerator:
             # 提交所有任务
             future_to_entity = {
                 executor.submit(generate_single_profile, idx, entity): (idx, entity)
-                for idx, entity in enumerate(entities)
+                for idx, entity in enumerate(selected_entities)
             }
             
             # 收集结果
             for future in concurrent.futures.as_completed(future_to_entity):
                 idx, entity = future_to_entity[future]
-                entity_type = entity.get_entity_type() or "Entity"
+                override = entity_override_for(entity, normalized_overrides)
+                entity_type = self._resolve_entity_type(entity, override.get("profile") if override else None)
                 
                 try:
                     result_idx, profile, error = future.result()

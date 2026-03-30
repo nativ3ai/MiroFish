@@ -10,7 +10,7 @@ from flask import request, jsonify, send_file
 from . import simulation_bp
 from ..config import Config
 from ..services.zep_entity_reader import ZepEntityReader
-from ..services.oasis_profile_generator import OasisProfileGenerator
+from ..services.oasis_profile_generator import OasisProfileGenerator, entity_override_for, normalize_profile_overrides
 from ..services.simulation_manager import SimulationManager, SimulationStatus
 from ..services.simulation_runner import SimulationRunner, RunnerStatus
 from ..utils.logger import get_logger
@@ -487,6 +487,7 @@ def prepare_simulation():
         entity_types_list = data.get('entity_types')
         use_llm_for_profiles = data.get('use_llm_for_profiles', True)
         parallel_profile_count = data.get('parallel_profile_count', 5)
+        profile_overrides = data.get('profile_overrides')
         
         # ========== 同步获取实体数量（在后台任务启动前） ==========
         # 这样前端在调用prepare后立即就能获取到预期Agent总数
@@ -499,10 +500,15 @@ def prepare_simulation():
                 defined_entity_types=entity_types_list,
                 enrich_with_edges=False  # 不获取边信息，加快速度
             )
+            normalized_overrides = normalize_profile_overrides(profile_overrides)
+            preview_entities = [
+                entity for entity in filtered_preview.entities
+                if entity_override_for(entity, normalized_overrides).get("enabled", True)
+            ]
             # 保存实体数量到状态（供前端立即获取）
-            state.entities_count = filtered_preview.filtered_count
+            state.entities_count = len(preview_entities)
             state.entity_types = list(filtered_preview.entity_types)
-            logger.info(f"预期实体数量: {filtered_preview.filtered_count}, 类型: {filtered_preview.entity_types}")
+            logger.info(f"预期实体数量: {len(preview_entities)}, 类型: {filtered_preview.entity_types}")
         except Exception as e:
             logger.warning(f"同步获取实体数量失败（将在后台任务中重试）: {e}")
             # 失败不影响后续流程，后台任务会重新获取
@@ -603,7 +609,8 @@ def prepare_simulation():
                     defined_entity_types=entity_types_list,
                     use_llm_for_profiles=use_llm_for_profiles,
                     progress_callback=progress_callback,
-                    parallel_profile_count=parallel_profile_count
+                    parallel_profile_count=parallel_profile_count,
+                    profile_overrides=profile_overrides,
                 )
                 
                 # 任务完成

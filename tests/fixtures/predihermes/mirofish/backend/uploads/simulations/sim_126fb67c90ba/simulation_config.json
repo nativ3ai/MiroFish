@@ -1,0 +1,379 @@
+{
+  "simulation_id": "sim_b948f43f3249",
+  "project_id": "proj_56b5dfba04b3",
+  "graph_id": "mirofish_abec3f85e067474f",
+  "simulation_requirement": "Forecast whether the Polymarket contract 'Iran x Israel/US conflict ends by March 31?' resolves YES by 2026-03-31 00:00 UTC. Use the seed packet to simulate the geopolitical topic 'Iran', actor incentives, escalation pathways, diplomatic pathways, and the exact evidence threshold implied by the market wording and description. End with an explicit YES/NO call for the contract plus the milestones that would most change the forecast.\n\nCounterfactual branch from sim_b948f43f3249: inject actor 'Qatari mediation broker' (Diplomat) at round 84 and observe how discourse and outcome shift.",
+  "time_config": {
+    "total_simulation_hours": 168,
+    "minutes_per_round": 60,
+    "agents_per_hour_min": 2,
+    "agents_per_hour_max": 6,
+    "peak_hours": [
+      19,
+      20,
+      21,
+      22
+    ],
+    "peak_activity_multiplier": 1.5,
+    "off_peak_hours": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "off_peak_activity_multiplier": 0.05,
+    "morning_hours": [
+      6,
+      7,
+      8
+    ],
+    "morning_activity_multiplier": 0.4,
+    "work_hours": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "work_activity_multiplier": 0.7
+  },
+  "agent_configs": [
+    {
+      "agent_id": 0,
+      "entity_uuid": "d5667030-3737-4add-870e-6ccd2e9df942",
+      "entity_name": "mediator activity",
+      "entity_type": "Diplomat",
+      "activity_level": 0.2,
+      "posts_per_hour": 0.5,
+      "comments_per_hour": 0.3,
+      "active_hours": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "response_delay_min": 60,
+      "response_delay_max": 240,
+      "sentiment_bias": 0.3,
+      "stance": "observer",
+      "influence_weight": 2.8
+    },
+    {
+      "agent_id": 1,
+      "entity_uuid": "98c6464d-5a17-4d36-bb9d-af233f7dec62",
+      "entity_name": "public official",
+      "entity_type": "GovernmentOfficial",
+      "activity_level": 0.25,
+      "posts_per_hour": 0.4,
+      "comments_per_hour": 0.2,
+      "active_hours": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "response_delay_min": 60,
+      "response_delay_max": 240,
+      "sentiment_bias": 0.1,
+      "stance": "neutral",
+      "influence_weight": 2.9
+    },
+    {
+      "agent_id": 2,
+      "entity_uuid": "68a7337b-cd84-41c4-9bff-ba9f09cdc2e4",
+      "entity_name": "Polymarket",
+      "entity_type": "PredictionMarket",
+      "activity_level": 0.5,
+      "posts_per_hour": 2.0,
+      "comments_per_hour": 1.5,
+      "active_hours": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "response_delay_min": 5,
+      "response_delay_max": 30,
+      "sentiment_bias": 0.0,
+      "stance": "neutral",
+      "influence_weight": 2.3
+    },
+    {
+      "agent_id": 3,
+      "entity_uuid": "49f0b1ef-cf2d-4820-8097-d98e4451c6f1",
+      "entity_name": "USNI Fleet Tracker",
+      "entity_type": "MediaOutlet",
+      "activity_level": 0.45,
+      "posts_per_hour": 1.2,
+      "comments_per_hour": 1.0,
+      "active_hours": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "response_delay_min": 5,
+      "response_delay_max": 25,
+      "sentiment_bias": -0.1,
+      "stance": "observer",
+      "influence_weight": 2.1
+    },
+    {
+      "agent_id": 4,
+      "entity_uuid": "3455a928-50d0-43f8-9462-5be1ef4817bf",
+      "entity_name": "USNI News",
+      "entity_type": "MediaOutlet",
+      "activity_level": 0.55,
+      "posts_per_hour": 2.5,
+      "comments_per_hour": 2.0,
+      "active_hours": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "response_delay_min": 5,
+      "response_delay_max": 30,
+      "sentiment_bias": 0.0,
+      "stance": "observer",
+      "influence_weight": 2.4
+    },
+    {
+      "agent_id": 5,
+      "entity_uuid": "20fdce1b-da47-418c-b2dd-8243c01a9a36",
+      "entity_name": "this market",
+      "entity_type": "PredictionMarket",
+      "activity_level": 0.5,
+      "posts_per_hour": 1.8,
+      "comments_per_hour": 1.2,
+      "active_hours": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "response_delay_min": 5,
+      "response_delay_max": 30,
+      "sentiment_bias": 0.0,
+      "stance": "neutral",
+      "influence_weight": 2.2
+    },
+    {
+      "agent_id": 6,
+      "entity_uuid": "16efee21-d9d1-48bd-b21f-067bb5f5418a",
+      "entity_name": "WorldOSINT",
+      "entity_type": "Organization",
+      "activity_level": 0.4,
+      "posts_per_hour": 1.0,
+      "comments_per_hour": 0.8,
+      "active_hours": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "response_delay_min": 10,
+      "response_delay_max": 30,
+      "sentiment_bias": -0.2,
+      "stance": "observer",
+      "influence_weight": 1.8
+    },
+    {
+      "agent_id": 7,
+      "entity_uuid": "counterfactual_sim_126fb67c90ba_7",
+      "entity_name": "Qatari mediation broker",
+      "entity_type": "Diplomat",
+      "activity_level": 0.6,
+      "posts_per_hour": 1.4,
+      "comments_per_hour": 1.0,
+      "active_hours": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "response_delay_min": 10,
+      "response_delay_max": 45,
+      "sentiment_bias": 0.0,
+      "stance": "mediator",
+      "influence_weight": 3.6,
+      "injection_round": 84,
+      "counterfactual": true
+    }
+  ],
+  "event_config": {
+    "initial_posts": [
+      {
+        "content": "官方声明暗示伊朗与以色列/美国冲突可能进入谈判框架，这是推动市场Yes决议的上行路径情景。",
+        "poster_type": "Diplomat",
+        "poster_agent_id": 0
+      },
+      {
+        "content": "政府官员公开宣布将评估伊朗冲突结束条件，符合市场Yes决议的证据阈值要求。",
+        "poster_type": "GovernmentOfficial",
+        "poster_agent_id": 1
+      },
+      {
+        "content": "Polymarket市场'Iran x Israel/US conflict ends by March 31?'当前报价12%/13%，流动性$95.8K。Yes需14天无合格军事行动。",
+        "poster_type": "PredictionMarket",
+        "poster_agent_id": 2
+      },
+      {
+        "content": "此市场若无从创建至3月31日前开始的连续14天无伊朗-以色列/美国军事行动，将决议为No。",
+        "poster_type": "PredictionMarket",
+        "poster_agent_id": 5
+      },
+      {
+        "content": "USNI Fleet Tracker：USS Roosevelt (DDG-80)等部署东地中海，USS Gerald R. Ford在红海，监视伊朗相关态势。",
+        "poster_type": "MediaOutlet",
+        "poster_agent_id": 3
+      },
+      {
+        "content": "USNI News 3月9日报道：USS Bulkeley (DDG-84)、USS Oscar Austin (DDG-79)等东地中海部署，关注伊朗冲突动态。",
+        "poster_type": "MediaOutlet",
+        "poster_agent_id": 4
+      },
+      {
+        "content": "WorldOSINT监测：IR风险47稳定，SY/IL/YE等59稳定，无动态分数激增迹象。",
+        "poster_type": "Organization",
+        "poster_agent_id": 6
+      }
+    ],
+    "scheduled_events": [
+      {
+        "round_num": 84,
+        "poster_type": "Diplomat",
+        "poster_agent_id": 7,
+        "content": "Qatari channels propose 14-day mutual stand-down verification starting now — Gulf trade stability demands it before March 31.",
+        "platform": "all"
+      }
+    ],
+    "hot_topics": [
+      "Iran-Israel/US conflict",
+      "14-day ceasefire",
+      "military action",
+      "Polymarket resolution",
+      "US naval deployment",
+      "WorldOSINT risk scores",
+      "ceasefire",
+      "14-day no-action",
+      "Gulf mediation",
+      "IAEA pause"
+    ],
+    "narrative_direction": "舆论从当前低概率（12-13%）的Yes决议预期，向关注剩余时间内的外交调解活动、官方声明与军事信号升级的方向发展，强调14天无军事行动阈值、美国海军部署稳定与风险分数平稳，可能通过调解推动向上，或升级拖延向下。"
+  },
+  "twitter_config": {
+    "platform": "twitter",
+    "recency_weight": 0.4,
+    "popularity_weight": 0.3,
+    "relevance_weight": 0.3,
+    "viral_threshold": 10,
+    "echo_chamber_strength": 0.5
+  },
+  "reddit_config": {
+    "platform": "reddit",
+    "recency_weight": 0.3,
+    "popularity_weight": 0.4,
+    "relevance_weight": 0.3,
+    "viral_threshold": 15,
+    "echo_chamber_strength": 0.6
+  },
+  "llm_model": "grok-4-1-fast-non-reasoning",
+  "llm_base_url": "https://api.x.ai/v1",
+  "generated_at": "2026-03-16T04:39:04.362483",
+  "generation_reasoning": "时间配置: 地缘政治预测市场话题持续性强，截止日期2026-03-31，模拟一周观察外交/军事动态；参与者为关注国际新闻的中国用户，媒体/预测市场实体活跃度较高，全天覆盖但高峰在晚间新闻时段，工作时间中等活跃以模拟官方/机构讨论。 | 事件配置: 提取种子包核心关键词聚焦冲突结束与市场决议；舆论方向基于模拟简报的上行（外交/声明）与下行（升级）路径；帖子分配匹配实体信息与可用类型，确保Diplomat/GovernmentOfficial处理调解/声明，PredictionMarket/MediaOutlet/Organization发布市场/新闻/监测内容。 | Agent配置: 成功生成 7 个 | 初始帖子分配: 7 个帖子已分配发布者",
+  "counterfactual": {
+    "base_simulation_id": "sim_b948f43f3249",
+    "created_at": "2026-03-16T16:06:46.411068",
+    "actor_name": "Qatari mediation broker",
+    "entity_type": "Diplomat",
+    "injection_round": 84,
+    "opening_statement": "Qatari channels propose 14-day mutual stand-down verification starting now — Gulf trade stability demands it before March 31."
+  }
+}

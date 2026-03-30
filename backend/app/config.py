@@ -31,6 +31,10 @@ class Config:
     LLM_API_KEY = os.environ.get('LLM_API_KEY')
     LLM_BASE_URL = os.environ.get('LLM_BASE_URL', 'https://api.openai.com/v1')
     LLM_MODEL_NAME = os.environ.get('LLM_MODEL_NAME', 'gpt-4o-mini')
+    LOCAL_LLM_REQUEST_TIMEOUT_SECONDS = float(os.environ.get('LOCAL_LLM_REQUEST_TIMEOUT_SECONDS', '900'))
+    LOCAL_LLM_MAX_RETRIES = int(os.environ.get('LOCAL_LLM_MAX_RETRIES', '1'))
+    LOCAL_LLM_MAX_TOKENS = int(os.environ.get('LOCAL_LLM_MAX_TOKENS', '192'))
+    LOCAL_LLM_TEMPERATURE = float(os.environ.get('LOCAL_LLM_TEMPERATURE', '0.2'))
 
     # 图谱后端配置
     GRAPH_BACKEND = os.environ.get('GRAPH_BACKEND', 'auto').lower().strip()
@@ -40,6 +44,12 @@ class Config:
 
     # 本地图谱存储路径
     LOCAL_GRAPH_STORE_PATH = os.path.join(os.path.dirname(__file__), '../uploads/graphs')
+    LOCAL_GRAPH_EXTRACTION_MODE = os.environ.get('LOCAL_GRAPH_EXTRACTION_MODE', 'fast').lower().strip()
+    LOCAL_SIMULATION_PROFILE = os.environ.get('LOCAL_SIMULATION_PROFILE', 'lean').lower().strip()
+    LOCAL_SIM_MAX_AGENTS = int(os.environ.get('LOCAL_SIM_MAX_AGENTS', '48'))
+    LOCAL_SIM_INITIAL_POST_LIMIT = int(os.environ.get('LOCAL_SIM_INITIAL_POST_LIMIT', '2'))
+    LOCAL_SIM_AGENTS_PER_HOUR_MIN = int(os.environ.get('LOCAL_SIM_AGENTS_PER_HOUR_MIN', '3'))
+    LOCAL_SIM_AGENTS_PER_HOUR_MAX = int(os.environ.get('LOCAL_SIM_AGENTS_PER_HOUR_MAX', '8'))
 
     # 文件上传配置
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50MB
@@ -75,6 +85,21 @@ class Config:
         if backend in ['', 'auto']:
             return 'zep' if cls.ZEP_API_KEY else 'local'
         return backend
+
+    @classmethod
+    def is_local_llm(cls) -> bool:
+        base_url = (cls.LLM_BASE_URL or '').strip().lower()
+        if not base_url:
+            return False
+        return any(
+            marker in base_url
+            for marker in (
+                '127.0.0.1',
+                'localhost',
+                '0.0.0.0',
+                'ollama',
+            )
+        )
 
     @classmethod
     def validate(cls):

@@ -1,0 +1,709 @@
+{
+  "simulation_id": "sim_b948f43f3249",
+  "runner_status": "running",
+  "current_round": 65,
+  "total_rounds": 168,
+  "simulated_hours": 0,
+  "total_simulation_hours": 168,
+  "progress_percent": 38.7,
+  "twitter_current_round": 59,
+  "reddit_current_round": 65,
+  "twitter_simulated_hours": 0,
+  "reddit_simulated_hours": 0,
+  "twitter_running": true,
+  "reddit_running": true,
+  "twitter_completed": false,
+  "reddit_completed": false,
+  "twitter_actions_count": 105,
+  "reddit_actions_count": 148,
+  "total_actions_count": 253,
+  "started_at": "2026-03-16T15:08:38.493865",
+  "updated_at": "2026-03-16T15:10:47.942919",
+  "completed_at": null,
+  "error": null,
+  "process_pid": 38655,
+  "recent_actions": [
+    {
+      "round_num": 65,
+      "timestamp": "2026-03-16T15:10:46.777450",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 23,
+        "comment_content": "WorldOSINT监测数据与USNI Fleet Tracker一致，美海军中东部署强调监控态势，支持谈判框架与检查机制的实施。当前无军事行动迹象，助力14天无合格行动要求，实现市场Yes决议路径。持续发布OSINT更新。#WorldOSINT",
+        "comment_author_name": "WorldOSINT"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 65,
+      "timestamp": "2026-03-16T15:10:46.777297",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 3,
+        "comment_content": "Polymarket上的这个市场Yes概率只有12-13%，流动性不错。官方声明推动谈判，14天无军行动，No看起来很稳。继续关注US海军动向！",
+        "comment_author_name": "Polymarket"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 59,
+      "timestamp": "2026-03-16T15:10:44.271958",
+      "platform": "twitter",
+      "agent_id": 1,
+      "agent_name": "public official",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 59,
+      "timestamp": "2026-03-16T15:10:44.271918",
+      "platform": "twitter",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 59,
+      "timestamp": "2026-03-16T15:10:44.271795",
+      "platform": "twitter",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 64,
+      "timestamp": "2026-03-16T15:10:42.749483",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DISLIKE_POST",
+      "action_args": {
+        "post_id": 13,
+        "dislike_id": 7,
+        "post_content": "Polymarket Iran x Israel/US conflict ends by March 31? 市场Yes仍低至12-13%，当前无合格军行动迹象，US海军部署为监控，官方声明仅谈框架未确认停火。14天规则指向No，强烈推荐！ #Polymarket #IranIsrael",
+        "post_author_name": "Polymarket"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 64,
+      "timestamp": "2026-03-16T15:10:42.749447",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 13,
+        "like_id": 30,
+        "post_content": "Polymarket Iran x Israel/US conflict ends by March 31? 市场Yes仍低至12-13%，当前无合格军行动迹象，US海军部署为监控，官方声明仅谈框架未确认停火。14天规则指向No，强烈推荐！ #Polymarket #IranIsrael",
+        "post_author_name": "Polymarket"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 64,
+      "timestamp": "2026-03-16T15:10:42.749402",
+      "platform": "reddit",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 64,
+      "timestamp": "2026-03-16T15:10:42.749272",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 20,
+        "comment_content": "谈判框架不等于14天无合格军行动！Polymarket规则明确，当前低Yes概率(12%)反映No主导。WorldOSINT稳定数据支持无行动，但需持续至3/31才行。别误导Yes！",
+        "comment_author_name": "Polymarket"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 58,
+      "timestamp": "2026-03-16T15:10:40.104642",
+      "platform": "twitter",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "CREATE_POST",
+      "action_args": {
+        "content": "📊 USNI Fleet Tracker Summary: Key U.S. Navy assets - USS Gerald R. Ford (CVN-78) in Red Sea, destroyers USS Roosevelt (DDG-80), Bulkeley (DDG-84), Oscar Austin (DDG-79) in Eastern Med. Tracking Iran-related developments and regional stability. Full report: https://www.usni.org/ #USNavy #FleetTracker #NavalNews",
+        "post_id": 45
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 58,
+      "timestamp": "2026-03-16T15:10:40.104461",
+      "platform": "twitter",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 63,
+      "timestamp": "2026-03-16T15:10:38.909169",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 63,
+      "timestamp": "2026-03-16T15:10:38.908937",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 4,
+        "like_id": 29,
+        "post_content": "此市场若无从创建至3月31日前开始的连续14天无伊朗-以色列/美国军事行动，将决议为No。",
+        "post_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 63,
+      "timestamp": "2026-03-16T15:10:38.908569",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 25,
+        "comment_content": "This is the core resolution rule for my market - no 14 continuous days without qualifying Iran-Israel/US military action by March 31 = No. Current monitoring by US Navy and stable OSINT data support this path strongly. Yes shares undervalued only if escalation avoided through end date.",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 57,
+      "timestamp": "2026-03-16T15:10:36.246770",
+      "platform": "twitter",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "CREATE_POST",
+      "action_args": {
+        "content": "🌍 USNI Fleet Tracker Reminder: Key US Navy units maintaining presence in Eastern Med (USS Roosevelt DDG-80, etc.) and Red Sea (USS Gerald R. Ford). Essential for regional stability amid Iran-related concerns. Latest intel welcome. #FleetTracker #USNI #NavalPower",
+        "post_id": 44
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 57,
+      "timestamp": "2026-03-16T15:10:36.246636",
+      "platform": "twitter",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 62,
+      "timestamp": "2026-03-16T15:10:34.991180",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 25,
+        "comment_content": "This is the core resolution rule for my market - no 14 continuous days without qualifying Iran-Israel/US military action by March 31 = No. Current monitoring by US Navy and stable OSINT data support this path strongly. Yes shares undervalued only if escalation avoided through end date.",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 62,
+      "timestamp": "2026-03-16T15:10:34.991030",
+      "platform": "reddit",
+      "agent_id": 1,
+      "agent_name": "public official",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 2,
+        "comment_content": "Disagree – official statements for talks don't meet the market's strict \"No qualifying military action for 14 continuous days\" criteria per the resolution rules in post 4. Naval deployments are positioning, not action. Low odds reflect No resolution path.",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 61,
+      "timestamp": "2026-03-16T15:10:31.312119",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 18,
+        "comment_content": "USNI Fleet Tracker 确认：当前美海军部署（USS Gerald R. Ford 在红海、USS Roosevelt 等在东地中海）为监视态势，支持“monitoring, not engaging”的判断。该部署符合无合格军事行动条件，有助于市场 No 决议路径。持续追踪舰队动态。",
+        "comment_author_name": "USNI Fleet Tracker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 48,
+      "timestamp": "2026-03-16T15:10:31.526182",
+      "platform": "twitter",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 48,
+      "timestamp": "2026-03-16T15:10:31.525988",
+      "platform": "twitter",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 48,
+      "timestamp": "2026-03-16T15:10:31.525852",
+      "platform": "twitter",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 60,
+      "timestamp": "2026-03-16T15:10:29.622835",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 25,
+        "comment_content": "This is the core resolution rule for my market - no 14 continuous days without qualifying Iran-Israel/US military action by March 31 = No. Current monitoring by US Navy and stable OSINT data support this path strongly. Yes shares undervalued only if escalation avoided through end date.",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 60,
+      "timestamp": "2026-03-16T15:10:29.622325",
+      "platform": "reddit",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 25,
+        "comment_content": "This is the core resolution rule for my market - no 14 continuous days without qualifying Iran-Israel/US military action by March 31 = No. Current monitoring by US Navy and stable OSINT data support this path strongly. Yes shares undervalued only if escalation avoided through end date.",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 59,
+      "timestamp": "2026-03-16T15:10:26.002652",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 24,
+        "comment_content": "USNI Fleet Tracker 补充：最新卫星跟踪确认 USS Gerald R. Ford CSG 红海位置稳定，驱逐舰群东地中海巡航无异常移动。部署强化监视能力，无迹象显示即将军事介入。实时数据支持当前低风险评估，继续监测中东海军动态。#FleetTracker #USNavyDeployments",
+        "comment_author_name": "USNI Fleet Tracker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 47,
+      "timestamp": "2026-03-16T15:10:26.702764",
+      "platform": "twitter",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 40,
+        "like_id": 14,
+        "post_content": "WorldOSINT Official Bulletin: Geopolitical risk indicators stable (IR:47, SY/IL/YE:59). Polymarket tensions markets at low Yes odds (12% Mar 31). No spikes in dynamic scores. Stakeholders: Stay informed via our channels. #WorldOSINT #RiskMonitoring",
+        "post_author_name": "WorldOSINT"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 46,
+      "timestamp": "2026-03-16T15:10:24.706949",
+      "platform": "twitter",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "REPOST",
+      "action_args": {
+        "new_post_id": 43,
+        "original_content": "Breaking: New USNI News - U.S. Navy continues robust presence in Eastern Mediterranean and Red Sea amid regional tensions. Latest fleet tracker details available now. #USNavy #MiddleEast #USNI https://news.usni.org/",
+        "original_author_name": "USNI News"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 46,
+      "timestamp": "2026-03-16T15:10:24.706918",
+      "platform": "twitter",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 46,
+      "timestamp": "2026-03-16T15:10:24.706821",
+      "platform": "twitter",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 58,
+      "timestamp": "2026-03-16T15:10:22.892569",
+      "platform": "reddit",
+      "agent_id": 0,
+      "agent_name": "mediator activity",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 23,
+        "comment_content": "WorldOSINT监测数据与USNI Fleet Tracker一致，美海军中东部署强调监控态势，支持谈判框架与检查机制的实施。当前无军事行动迹象，助力14天无合格行动要求，实现市场Yes决议路径。持续发布OSINT更新。#WorldOSINT",
+        "comment_author_name": "WorldOSINT"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 57,
+      "timestamp": "2026-03-16T15:10:19.920509",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 45,
+      "timestamp": "2026-03-16T15:10:20.932487",
+      "platform": "twitter",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 45,
+      "timestamp": "2026-03-16T15:10:20.932354",
+      "platform": "twitter",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "QUOTE_POST",
+      "action_args": {
+        "quoted_id": 26,
+        "new_post_id": 42,
+        "original_content": "The 14-day resolution period for this market must continue uninterrupted through 12:00 PM ET on the 14th calendar day after the strike is confirmed The 14-day resolution period for this market must continue uninterrupted through 12:00 PM ET on the 14th calendar day after the strike is confirmed. this market will resolve to \"No\" under certain conditions",
+        "original_author_name": "this market",
+        "quote_content": "Key Polymarket rule reminder: 14-day uninterrupted period post-strike for \"conflict ends\" markets like Iran x Israel/US by Mar 31. No new actions = Yes potential. Current odds ~12%. Full details & trade: https://polymarket.com #PolymarketRules"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 45,
+      "timestamp": "2026-03-16T15:10:20.932148",
+      "platform": "twitter",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 48,
+      "timestamp": "2026-03-16T15:10:18.854555",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "CREATE_COMMENT",
+      "action_args": {
+        "content": "This is the core resolution rule for my market - no 14 continuous days without qualifying Iran-Israel/US military action by March 31 = No. Current monitoring by US Navy and stable OSINT data support this path strongly. Yes shares undervalued only if escalation avoided through end date.",
+        "comment_id": 25
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 47,
+      "timestamp": "2026-03-16T15:10:15.821013",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 47,
+      "timestamp": "2026-03-16T15:10:15.820902",
+      "platform": "reddit",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 44,
+      "timestamp": "2026-03-16T15:10:16.470136",
+      "platform": "twitter",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "REPOST",
+      "action_args": {
+        "new_post_id": 41,
+        "original_content": "WorldOSINT Official Bulletin: Geopolitical risk indicators stable (IR:47, SY/IL/YE:59). Polymarket tensions markets at low Yes odds (12% Mar 31). No spikes in dynamic scores. Stakeholders: Stay informed via our channels. #WorldOSINT #RiskMonitoring",
+        "original_author_name": "WorldOSINT"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 44,
+      "timestamp": "2026-03-16T15:10:16.470009",
+      "platform": "twitter",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 43,
+      "timestamp": "2026-03-16T15:10:13.628842",
+      "platform": "twitter",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "CREATE_POST",
+      "action_args": {
+        "content": "WorldOSINT Official Bulletin: Geopolitical risk indicators stable (IR:47, SY/IL/YE:59). Polymarket tensions markets at low Yes odds (12% Mar 31). No spikes in dynamic scores. Stakeholders: Stay informed via our channels. #WorldOSINT #RiskMonitoring",
+        "post_id": 40
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 43,
+      "timestamp": "2026-03-16T15:10:13.628761",
+      "platform": "twitter",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 34,
+        "like_id": 13,
+        "post_content": "Breaking: New USNI News - U.S. Navy continues robust presence in Eastern Mediterranean and Red Sea amid regional tensions. Latest fleet tracker details available now. #USNavy #MiddleEast #USNI https://news.usni.org/",
+        "post_author_name": "USNI News"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 43,
+      "timestamp": "2026-03-16T15:10:13.628542",
+      "platform": "twitter",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 24,
+        "like_id": 12,
+        "post_content": "🚨 Fleet Update: USNI continues to track US Navy assets in the Eastern Mediterranean and Red Sea amid heightened tensions. USS Gerald R. Ford CSG and Arleigh Burke-class destroyers on station. Follow for real-time developments. Source: USNI.org #USNavy #FleetTracker #MiddleEast",
+        "post_author_name": "USNI Fleet Tracker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 46,
+      "timestamp": "2026-03-16T15:10:11.224987",
+      "platform": "reddit",
+      "agent_id": 6,
+      "agent_name": "WorldOSINT",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 18,
+        "comment_content": "USNI Fleet Tracker 确认：当前美海军部署（USS Gerald R. Ford 在红海、USS Roosevelt 等在东地中海）为监视态势，支持“monitoring, not engaging”的判断。该部署符合无合格军事行动条件，有助于市场 No 决议路径。持续追踪舰队动态。",
+        "comment_author_name": "USNI Fleet Tracker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 46,
+      "timestamp": "2026-03-16T15:10:11.224853",
+      "platform": "reddit",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 24,
+        "comment_content": "USNI Fleet Tracker 补充：最新卫星跟踪确认 USS Gerald R. Ford CSG 红海位置稳定，驱逐舰群东地中海巡航无异常移动。部署强化监视能力，无迹象显示即将军事介入。实时数据支持当前低风险评估，继续监测中东海军动态。#FleetTracker #USNavyDeployments",
+        "comment_author_name": "USNI Fleet Tracker"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 45,
+      "timestamp": "2026-03-16T15:10:08.486688",
+      "platform": "reddit",
+      "agent_id": 3,
+      "agent_name": "USNI Fleet Tracker",
+      "action_type": "DISLIKE_COMMENT",
+      "action_args": {
+        "comment_id": 23,
+        "comment_content": "WorldOSINT监测数据与USNI Fleet Tracker一致，美海军中东部署强调监控态势，支持谈判框架与检查机制的实施。当前无军事行动迹象，助力14天无合格行动要求，实现市场Yes决议路径。持续发布OSINT更新。#WorldOSINT",
+        "comment_author_name": "WorldOSINT"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 45,
+      "timestamp": "2026-03-16T15:10:08.486561",
+      "platform": "reddit",
+      "agent_id": 4,
+      "agent_name": "USNI News",
+      "action_type": "LIKE_COMMENT",
+      "action_args": {
+        "comment_id": 2,
+        "comment_content": "Disagree – official statements for talks don't meet the market's strict \"No qualifying military action for 14 continuous days\" criteria per the resolution rules in post 4. Naval deployments are positioning, not action. Low odds reflect No resolution path.",
+        "comment_author_name": "this market"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 42,
+      "timestamp": "2026-03-16T15:10:09.136469",
+      "platform": "twitter",
+      "agent_id": 0,
+      "agent_name": "mediator activity",
+      "action_type": "QUOTE_POST",
+      "action_args": {
+        "quoted_id": 23,
+        "new_post_id": 39,
+        "original_content": "Latest OSINT Update: Polymarket 'Iran x Israel/US conflict ends by March 31?' at 12%/13% (Yes/No), liquidity $95.8K. Yes resolves No if no qualifying military action in 14 days. Monitoring closely. #OSINT #Polymarket #Geopolitics",
+        "original_author_name": "WorldOSINT",
+        "quote_content": "Official statements are suggested as an upside path scenario that could move the contract probability, similar to mediator activity. A negotiation framework is suggested as an upside path scenario that could move the contract probability, similar to mediator activity. #Geopolitics #Polymarket"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 42,
+      "timestamp": "2026-03-16T15:10:09.136419",
+      "platform": "twitter",
+      "agent_id": 5,
+      "agent_name": "this market",
+      "action_type": "DO_NOTHING",
+      "action_args": {},
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 42,
+      "timestamp": "2026-03-16T15:10:09.136338",
+      "platform": "twitter",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "REPOST",
+      "action_args": {
+        "new_post_id": 38,
+        "original_content": "Traders: Recent stability in IR/SY/IL/YE regions per OSINT, but US fleet deployments keep tensions alive. Polymarket odds for Iran x Israel/US conflict ending by Mar 31 at low 12%. Longer-term markets to Apr 15 & ceasefire live - what's your take? https://polymarket.com #PredictionMarket #MiddleEast",
+        "original_author_name": "Polymarket"
+      },
+      "result": null,
+      "success": true
+    },
+    {
+      "round_num": 42,
+      "timestamp": "2026-03-16T15:10:09.136295",
+      "platform": "twitter",
+      "agent_id": 2,
+      "agent_name": "Polymarket",
+      "action_type": "LIKE_POST",
+      "action_args": {
+        "post_id": 28,
+        "like_id": 11,
+        "post_content": "Traders: Recent stability in IR/SY/IL/YE regions per OSINT, but US fleet deployments keep tensions alive. Polymarket odds for Iran x Israel/US conflict ending by Mar 31 at low 12%. Longer-term markets to Apr 15 & ceasefire live - what's your take? https://polymarket.com #PredictionMarket #MiddleEast",
+        "post_author_name": "Polymarket"
+      },
+      "result": null,
+      "success": true
+    }
+  ],
+  "rounds_count": 0
+}

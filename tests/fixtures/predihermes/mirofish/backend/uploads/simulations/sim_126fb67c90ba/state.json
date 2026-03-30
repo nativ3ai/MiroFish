@@ -1,0 +1,25 @@
+{
+  "simulation_id": "sim_126fb67c90ba",
+  "project_id": "proj_56b5dfba04b3",
+  "graph_id": "mirofish_abec3f85e067474f",
+  "enable_twitter": true,
+  "enable_reddit": true,
+  "status": "running",
+  "entities_count": 8,
+  "profiles_count": 8,
+  "entity_types": [
+    "Diplomat",
+    "GovernmentOfficial",
+    "MediaOutlet",
+    "Organization",
+    "PredictionMarket"
+  ],
+  "config_generated": true,
+  "config_reasoning": "时间配置: 地缘政治预测市场话题持续性强，截止日期2026-03-31，模拟一周观察外交/军事动态；参与者为关注国际新闻的中国用户，媒体/预测市场实体活跃度较高，全天覆盖但高峰在晚间新闻时段，工作时间中等活跃以模拟官方/机构讨论。 | 事件配置: 提取种子包核心关键词聚焦冲突结束与市场决议；舆论方向基于模拟简报的上行（外交/声明）与下行（升级）路径；帖子分配匹配实体信息与可用类型，确保Diplomat/GovernmentOfficial处理调解/声明，PredictionMarket/MediaOutlet/Organization发布市场/新闻/监测内容。 | Agent配置: 成功生成 7 个 | 初始帖子分配: 7 个帖子已分配发布者\nCounterfactual branch: Counterfactual branch from sim_b948f43f3249: inject actor 'Qatari mediation broker' (Diplomat) at round 84 and observe how discourse and outcome shift.",
+  "current_round": 0,
+  "twitter_status": "not_started",
+  "reddit_status": "not_started",
+  "created_at": "2026-03-16T16:06:46.409200",
+  "updated_at": "2026-03-16T16:06:49.480850",
+  "error": null
+}

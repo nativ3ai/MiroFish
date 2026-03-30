@@ -18,6 +18,7 @@ from ..config import Config
 from ..models.task import TaskManager, TaskStatus
 from ..utils.llm_client import LLMClient
 from ..utils.logger import get_logger
+from .entity_quality import assess_entity_candidate
 
 try:
     from zep_cloud import EpisodeData, EntityEdgeSourceTarget
@@ -417,6 +418,7 @@ class LocalGraphBackend(BaseGraphBackend):
         self.storage_root = Path(storage_root or Config.LOCAL_GRAPH_STORE_PATH)
         self.storage_root.mkdir(parents=True, exist_ok=True)
         self._llm_client = llm_client
+        self.extraction_mode = Config.LOCAL_GRAPH_EXTRACTION_MODE or "fast"
 
     def _graph_db_path(self, graph_id: str) -> Path:
         return self.storage_root / f"{graph_id}.sqlite3"
@@ -564,11 +566,14 @@ class LocalGraphBackend(BaseGraphBackend):
     ):
         now = utcnow_iso()
         for chunk, episode_id in zip(chunks, episode_ids):
-            try:
-                extraction = self._extract_graph_from_chunk(ontology, chunk)
-            except Exception as e:
-                logger.warning(f"本地图谱抽取失败，使用回退策略: {e}")
+            if self.extraction_mode == "fast":
                 extraction = self._fallback_extract(ontology, chunk)
+            else:
+                try:
+                    extraction = self._extract_graph_from_chunk(ontology, chunk)
+                except Exception as e:
+                    logger.warning(f"本地图谱抽取失败，使用回退策略: {e}")
+                    extraction = self._fallback_extract(ontology, chunk)
             entities = extraction.get("entities", []) or []
             relations = extraction.get("relations", []) or []
             entity_index: Dict[tuple[str, str], str] = {}
@@ -644,19 +649,26 @@ class LocalGraphBackend(BaseGraphBackend):
         seen = set()
         entity_types = [item.get("name", "Entity") for item in ontology.get("entity_types", [])]
         default_type = entity_types[0] if entity_types else "Entity"
+        scored_candidates = []
         for match in re.findall(r"\b(?:[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,3}|[A-Z]{2,}(?:\s+[A-Z]{2,}){0,2})\b", chunk):
             name = match.strip()
             key = self._normalize_name(name)
             if len(key) < 3 or key in seen:
                 continue
             seen.add(key)
+            quality = assess_entity_candidate(name, summary=f"Extracted from source text mentioning {name}.")
+            if not quality.keep:
+                continue
+            scored_candidates.append((quality.score, name))
+        scored_candidates.sort(key=lambda item: item[0], reverse=True)
+        for _, name in scored_candidates[:15]:
             entities.append({
                 "name": name,
                 "entity_type": default_type,
                 "summary": f"Extracted from source text mentioning {name}.",
                 "attributes": {},
             })
-        return {"entities": entities[:15], "relations": []}
+        return {"entities": entities, "relations": []}
 
     def wait_for_episodes(
         self,

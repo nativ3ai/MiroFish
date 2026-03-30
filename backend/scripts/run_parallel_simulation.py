@@ -173,6 +173,8 @@ except ImportError as e:
     print("请先安装: pip install oasis-ai camel-ai")
     sys.exit(1)
 
+from app.config import Config
+
 
 # Twitter可用动作（不包含INTERVIEW，INTERVIEW只能通过ManualAction手动触发）
 TWITTER_ACTIONS = [
@@ -1030,10 +1032,24 @@ def create_model(config: Dict[str, Any], use_boost: bool = False):
         os.environ["OPENAI_API_BASE_URL"] = llm_base_url
     
     print(f"{config_label} model={llm_model}, base_url={llm_base_url[:40] if llm_base_url else '默认'}...")
-    
+
+    model_config_dict: Dict[str, Any] = {}
+    timeout = None
+    max_retries = 3
+    if Config.is_local_llm():
+        model_config_dict["temperature"] = Config.LOCAL_LLM_TEMPERATURE
+        model_config_dict["max_tokens"] = Config.LOCAL_LLM_MAX_TOKENS
+        timeout = Config.LOCAL_LLM_REQUEST_TIMEOUT_SECONDS
+        max_retries = Config.LOCAL_LLM_MAX_RETRIES
+
     return ModelFactory.create(
         model_platform=ModelPlatformType.OPENAI,
         model_type=llm_model,
+        model_config_dict=model_config_dict or None,
+        api_key=os.environ.get("OPENAI_API_KEY"),
+        url=llm_base_url or None,
+        timeout=timeout,
+        max_retries=max_retries,
     )
 
 

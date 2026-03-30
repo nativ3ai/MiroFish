@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 
 from ..utils.logger import get_logger
 from .graph_backend import get_graph_backend
+from .entity_quality import assess_entity_candidate
 
 logger = get_logger('mirofish.zep_entity_reader')
 
@@ -44,6 +45,8 @@ class FilteredEntities:
     entity_types: Set[str]
     total_count: int
     filtered_count: int
+    rejected_count: int = 0
+    rejected_examples: List[Dict[str, Any]] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -51,6 +54,8 @@ class FilteredEntities:
             "entity_types": list(self.entity_types),
             "total_count": self.total_count,
             "filtered_count": self.filtered_count,
+            "rejected_count": self.rejected_count,
+            "rejected_examples": self.rejected_examples,
         }
 
 
@@ -95,6 +100,8 @@ class ZepEntityReader:
         all_edges = self.get_all_edges(graph_id) if enrich_with_edges else []
         node_map = {n["uuid"]: n for n in all_nodes}
         filtered_entities = []
+        scored_entities = []
+        rejected_examples: List[Dict[str, Any]] = []
         entity_types_found: Set[str] = set()
 
         for node in all_nodes:
@@ -109,6 +116,21 @@ class ZepEntityReader:
                 entity_type = matching_labels[0]
             else:
                 entity_type = custom_labels[0]
+            quality = assess_entity_candidate(
+                node.get("name", ""),
+                summary=node.get("summary", ""),
+                labels=labels,
+            )
+            if not quality.keep:
+                if len(rejected_examples) < 12:
+                    rejected_examples.append(
+                        {
+                            "name": node.get("name", ""),
+                            "reason": quality.reason,
+                            "score": quality.score,
+                        }
+                    )
+                continue
             entity_types_found.add(entity_type)
             entity = EntityNode(
                 uuid=node["uuid"],
@@ -149,16 +171,22 @@ class ZepEntityReader:
                             "summary": related_node.get("summary", ""),
                         })
                 entity.related_nodes = related_nodes
-            filtered_entities.append(entity)
+            scored_entities.append((quality.score, entity))
+
+        scored_entities.sort(key=lambda item: item[0], reverse=True)
+        filtered_entities = [entity for _, entity in scored_entities]
+        rejected_count = total_count - len(filtered_entities)
 
         logger.info(
-            f"筛选完成: 总节点 {total_count}, 符合条件 {len(filtered_entities)}, 实体类型: {entity_types_found}"
+            f"筛选完成: 总节点 {total_count}, 符合条件 {len(filtered_entities)}, 拒绝 {rejected_count}, 实体类型: {entity_types_found}"
         )
         return FilteredEntities(
             entities=filtered_entities,
             entity_types=entity_types_found,
             total_count=total_count,
             filtered_count=len(filtered_entities),
+            rejected_count=max(rejected_count, 0),
+            rejected_examples=rejected_examples,
         )
 
     def get_entity_with_context(self, graph_id: str, entity_uuid: str) -> Optional[EntityNode]:

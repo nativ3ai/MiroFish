@@ -17,7 +17,12 @@ from enum import Enum
 from ..config import Config
 from ..utils.logger import get_logger
 from .zep_entity_reader import ZepEntityReader, FilteredEntities
-from .oasis_profile_generator import OasisProfileGenerator, OasisAgentProfile
+from .oasis_profile_generator import (
+    OasisProfileGenerator,
+    OasisAgentProfile,
+    entity_override_for,
+    normalize_profile_overrides,
+)
 from .simulation_config_generator import SimulationConfigGenerator, SimulationParameters
 
 logger = get_logger('mirofish.simulation')
@@ -236,7 +241,8 @@ class SimulationManager:
         defined_entity_types: Optional[List[str]] = None,
         use_llm_for_profiles: bool = True,
         progress_callback: Optional[callable] = None,
-        parallel_profile_count: int = 3
+        parallel_profile_count: int = 3,
+        profile_overrides: Optional[Dict[str, Any]] = None,
     ) -> SimulationState:
         """
         准备模拟环境（全程自动化）
@@ -272,7 +278,7 @@ class SimulationManager:
             
             # ========== 阶段1: 读取并过滤实体 ==========
             if progress_callback:
-                progress_callback("reading", 0, "正在连接Zep图谱...")
+                progress_callback("reading", 0, "正在连接图谱 backend...")
             
             reader = ZepEntityReader()
             
@@ -284,26 +290,32 @@ class SimulationManager:
                 defined_entity_types=defined_entity_types,
                 enrich_with_edges=True
             )
+
+            normalized_overrides = normalize_profile_overrides(profile_overrides)
+            selected_entities = [
+                entity for entity in filtered.entities
+                if entity_override_for(entity, normalized_overrides).get("enabled", True)
+            ]
             
-            state.entities_count = filtered.filtered_count
+            state.entities_count = len(selected_entities)
             state.entity_types = list(filtered.entity_types)
             
             if progress_callback:
                 progress_callback(
                     "reading", 100, 
-                    f"完成，共 {filtered.filtered_count} 个实体",
-                    current=filtered.filtered_count,
-                    total=filtered.filtered_count
+                    f"完成，共 {len(selected_entities)} 个实体",
+                    current=len(selected_entities),
+                    total=len(selected_entities)
                 )
             
-            if filtered.filtered_count == 0:
+            if not selected_entities:
                 state.status = SimulationStatus.FAILED
                 state.error = "没有找到符合条件的实体，请检查图谱是否正确构建"
                 self._save_simulation_state(state)
                 return state
             
             # ========== 阶段2: 生成Agent Profile ==========
-            total_entities = len(filtered.entities)
+            total_entities = len(selected_entities)
             
             if progress_callback:
                 progress_callback(
@@ -313,7 +325,7 @@ class SimulationManager:
                     total=total_entities
                 )
             
-            # 传入graph_id以启用Zep检索功能，获取更丰富的上下文
+            # 传入 graph_id 以便 profile 生成器在需要时补充图谱上下文。
             generator = OasisProfileGenerator(graph_id=state.graph_id)
             
             def profile_progress(current, total, msg):
@@ -338,13 +350,14 @@ class SimulationManager:
                 realtime_platform = "twitter"
             
             profiles = generator.generate_profiles_from_entities(
-                entities=filtered.entities,
+                entities=selected_entities,
                 use_llm=use_llm_for_profiles,
                 progress_callback=profile_progress,
-                graph_id=state.graph_id,  # 传入graph_id用于Zep检索
+                graph_id=state.graph_id,
                 parallel_count=parallel_profile_count,  # 并行生成数量
                 realtime_output_path=realtime_output_path,  # 实时保存路径
-                output_platform=realtime_platform  # 输出格式
+                output_platform=realtime_platform,  # 输出格式
+                profile_overrides=profile_overrides,
             )
             
             state.profiles_count = len(profiles)
@@ -407,7 +420,7 @@ class SimulationManager:
                 graph_id=state.graph_id,
                 simulation_requirement=simulation_requirement,
                 document_text=document_text,
-                entities=filtered.entities,
+                entities=selected_entities,
                 enable_twitter=state.enable_twitter,
                 enable_reddit=state.enable_reddit
             )
